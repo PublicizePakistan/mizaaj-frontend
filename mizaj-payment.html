@@ -325,19 +325,54 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3500);
 }
 
+const API_BASE = "https://web-production-1f476a.up.railway.app";
+
 async function checkAccess() {
   const user_id = localStorage.getItem("user_id");
 
-  const res = await fetch(`https://web-production-1f476a.up.railway.app/check-access/${user_id}`);
-  const data = await res.json();
+  if (!user_id) {
+    window.location.href = "mizaj-auth.html";
+    return;
+  }
 
-  if (data.access === "payment") {
-    window.location.href = "mizaj-payment.html";
-  } else {
-    if (data.attempt_id) {
-      localStorage.setItem("attempt_id", data.attempt_id);
+  try {
+    const res = await fetch(`${API_BASE}/check-access/${user_id}`);
+    const data = await res.json();
+
+    console.log("Access:", data);
+
+    if (data.access === "payment") {
+      window.location.href = "mizaj-payment.html";
+      return;
     }
-    window.location.href = "mizaj-test.html";
+
+    if (data.access === "test") {
+
+      // ✅ CASE 1: already has attempt
+      if (data.attempt_id) {
+        localStorage.setItem("attempt_id", data.attempt_id);
+        window.location.href = "mizaj-test.html";
+      }
+
+      // 🔥 CASE 2: NO attempt → CREATE ONE
+      else {
+        const startRes = await fetch(`${API_BASE}/start-test?user_id=${user_id}`, {
+          method: "POST"
+        });
+
+        const startData = await startRes.json();
+
+        console.log("New Attempt:", startData);
+
+        localStorage.setItem("attempt_id", startData.attempt_id);
+
+        window.location.href = "mizaj-test.html";
+      }
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong");
   }
 }
 
