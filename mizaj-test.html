@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mizaj — The Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0D0D12;--ink-soft:#1A1A24;--gold:#C9A84C;--gold-light:#E8CC7A;--gold-dim:rgba(201,168,76,0.15);--cream:#F5F0E8;--muted:#6B6B7E;--card-bg:rgba(255,255,255,0.03);--border:rgba(201,168,76,0.2);--border-soft:rgba(255,255,255,0.07)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+
+/* ── HEADER ── */
+.test-header{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 6%;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(13,13,18,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-soft)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-decoration:none;text-transform:uppercase}
+.nav-logo span{display:inline-block;width:5px;height:5px;background:var(--gold);border-radius:50%;margin-left:3px;vertical-align:middle;margin-bottom:3px}
+.header-center{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 40px}
+.progress-counter{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.progress-counter strong{color:var(--gold)}
+.progress-track{width:100%;max-width:360px;height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:2px;transition:width .5s ease;width:0%}
+.lang-toggle{display:flex;align-items:center;gap:6px;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:none;border:none;transition:color .3s;flex-shrink:0}
+.lang-toggle:hover{color:var(--gold)}
+.lang-toggle .active{color:var(--gold)}
+
+/* ── SCREENS ── */
+.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:80px 6% 40px;z-index:10;opacity:0;pointer-events:none;transition:opacity .4s ease,transform .4s ease}
+.screen.active{opacity:1;pointer-events:all}
+.screen.slide-out-left{animation:slideOutLeft .35s ease forwards}
+.screen.slide-in-right{animation:slideInRight .35s ease forwards}
+@keyframes slideOutLeft{to{opacity:0;transform:translateX(-40px)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── CHAPTER INTRO ── */
+.chapter-screen{flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.chapter-num{font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.chapter-num::before,.chapter-num::after{content:'';display:block;width:32px;height:1px;background:var(--gold);opacity:.6}
+.chapter-glyph{font-size:4rem;margin-bottom:28px;display:block;opacity:.8}
+.chapter-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,6vw,5rem);font-weight:300;line-height:1.05;margin-bottom:16px}
+.chapter-title em{color:var(--gold);font-style:italic}
+.chapter-desc{font-size:1rem;color:rgba(245,240,232,.55);max-width:420px;line-height:1.8;margin-bottom:44px}
+.chapter-meta{font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:36px}
+.btn-begin{background:var(--gold);color:var(--ink);padding:14px 40px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:all .3s}
+.btn-begin:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,.35)}
+
+/* ── QUESTION SCREEN ── */
+.question-screen{flex-direction:column;max-width:680px;width:100%;margin:0 auto}
+.q-context{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:.8}
+.q-text{font-family:'Cormorant Garamond',serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:300;line-height:1.35;margin-bottom:36px;color:var(--cream)}
+.options{display:flex;flex-direction:column;gap:14px}
+.option-card{border:1px solid var(--border-soft);background:var(--card-bg);padding:22px 24px;cursor:pointer;transition:all .25s ease;position:relative;overflow:hidden;user-select:none;-webkit-tap-highlight-color:transparent}
+.option-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-dim),transparent);opacity:0;transition:opacity .25s}
+.option-card:hover{border-color:rgba(201,168,76,.35);transform:translateX(4px)}
+.option-card:hover::before{opacity:1}
+.option-card.selected{border-color:var(--gold);background:var(--gold-dim)}
+.option-card.selected::before{opacity:1}
+.option-card.selected .opt-label{color:var(--gold)}
+.option-inner{display:flex;align-items:flex-start;gap:16px}
+.opt-label{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);flex-shrink:0;margin-top:2px;transition:color .25s;font-weight:500;min-width:16px}
+.opt-text{font-size:.95rem;color:rgba(245,240,232,.85);line-height:1.65;font-weight:300}
+.option-card.selected .opt-text{color:var(--cream)}
+.option-card.correct-glow{animation:correctPulse .5s ease}
+@keyframes correctPulse{0%{box-shadow:0 0 0 0 rgba(201,168,76,.4)}100%{box-shadow:0 0 0 16px rgba(201,168,76,0)}}
+
+/* BACK BUTTON */
+.q-nav{display:flex;align-items:center;justify-content:space-between;margin-top:28px}
+.btn-back{background:none;border:none;color:var(--muted);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:8px;transition:color .3s;font-family:'DM Sans',sans-serif;padding:0}
+.btn-back:hover{color:var(--cream)}
+.btn-back svg{transition:transform .3s}
+.btn-back:hover svg{transform:translateX(-3px)}
+.btn-back:disabled{opacity:.2;pointer-events:none}
+.q-dots{display:flex;gap:4px}
+.q-dot{width:5px;height:5px;border-radius:50%;background:var(--border-soft);transition:background .3s}
+.q-dot.done{background:var(--gold);opacity:.5}
+.q-dot.current{background:var(--gold)}
+
+/* ── MILESTONE SCREEN ── */
+.milestone-screen{flex-direction:column;align-items:center;text-align:center}
+.milestone-icon{font-size:3.5rem;margin-bottom:20px}
+.milestone-title{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;margin-bottom:12px}
+.milestone-title em{color:var(--gold);font-style:italic}
+.milestone-text{font-size:.95rem;color:rgba(245,240,232,.55);max-width:380px;line-height:1.8;margin-bottom:36px}
+
+/* ── CALCULATING SCREEN ── */
+.calc-screen{flex-direction:column;align-items:center;text-align:center}
+.calc-orbit{width:80px;height:80px;border:1px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:orbit 1.2s linear infinite;margin-bottom:32px}
+@keyframes orbit{to{transform:rotate(360deg)}}
+.calc-title{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;margin-bottom:12px}
+.calc-title em{color:var(--gold);font-style:italic}
+.calc-sub{font-size:.85rem;color:var(--muted);letter-spacing:.08em;animation:fadeText 2s infinite}
+@keyframes fadeText{0%,100%{opacity:.4}50%{opacity:1}}
+.calc-steps{margin-top:40px;display:flex;flex-direction:column;gap:10px;min-width:260px}
+.calc-step{display:flex;align-items:center;gap:12px;font-size:.78rem;color:var(--muted);opacity:0;transition:opacity .4s,color .4s}
+.calc-step.show{opacity:1}
+.calc-step.done{color:var(--gold)}
+.calc-step .step-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.calc-step.done .step-dot{background:var(--gold)}
+
+/* DECORATIVE BG */
+.deco{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.deco-circle{position:absolute;border-radius:50%;border:1px solid var(--border-soft);opacity:.4}
+.deco-1{width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.deco-2{width:300px;height:300px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.deco-glow{position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.05) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%)}
+
+/* URDU */
+body.urdu{font-family:'Noto Nastaliq Urdu',serif}
+body.urdu .q-text{font-family:'Noto Nastaliq Urdu',serif;font-size:1.4rem}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .test-header{padding:0 4%}
+  .header-center{padding:0 12px}
+  .screen{padding:80px 4% 30px}
+  .option-card{padding:18px}
+  .q-text{font-size:1.3rem}
+  .chapter-title{font-size:2.4rem}
+}
+</style>
+</head>
+<body>
+
+<div class="deco">
+  <div class="deco-glow"></div>
+  <div class="deco-circle deco-1"></div>
+  <div class="deco-circle deco-2"></div>
+</div>
+
+<!-- FIXED HEADER -->
+<header class="test-header">
+  <a href="mizaj-landing.html" class="nav-logo">M<span></span></a>
+  <div class="header-center">
+    <div class="progress-counter">Question <strong id="qNumDisplay">—</strong> of 60</div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()">
+    <span class="active" id="enLabel">EN</span>
+    <span style="color:rgba(255,255,255,.2)">·</span>
+    <span id="urLabel">اردو</span>
+  </button>
+</header>
+
+<!-- ═══ CHAPTER 1 INTRO ═══ -->
+<div class="screen chapter-screen active" id="chapter1">
+  <div class="chapter-num" data-en="Part One of Four" data-ur="چار حصوں میں سے پہلا">Part One of Four</div>
+  <span class="chapter-glyph">⚡</span>
+  <h1 class="chapter-title" data-en="Your <em>Energy</em><br>& Social Style" data-ur="آپ کی <em>توانائی</em><br>اور سماجی انداز">Your <em>Energy</em><br>& Social Style</h1>
+  <p class="chapter-desc" data-en="These 15 questions explore how you draw energy from the world around you — and how you show up in it." data-ur="یہ 15 سوال جانچیں گے کہ آپ دنیا سے توانائی کیسے حاصل کرتے ہیں۔">These 15 questions explore how you draw energy from the world around you — and how you show up in it.</p>
+  <div class="chapter-meta" data-en="15 Questions · ~3 Minutes" data-ur="15 سوالات · تقریباً 3 منٹ">15 Questions · ~3 Minutes</div>
+  <button class="btn-begin" onclick="beginChapter(1)" data-en="Let's Begin" data-ur="شروع کریں">Let's Begin</button>
+</div>
+
+<!-- ═══ CHAPTER 2 INTRO ═══ -->
+<div class="screen chapter-screen" id="chapter2">
+  <div class="chapter-num" data-en="Part Two of Four" data-ur="چار حصوں میں سے دوسرا">Part Two of Four</div>
+  <span class="chapter-glyph">🔭</span>
+  <h1 class="chapter-title" data-en="How You <em>See</em><br>the World" data-ur="آپ دنیا کو<br>کیسے <em>دیکھتے</em> ہیں">How You <em>See</em><br>the World</h1>
+  <p class="chapter-desc" data-en="Next, we explore the lens through which you gather information — detail and facts, or patterns and possibilities." data-ur="اب ہم دیکھیں گے کہ آپ معلومات کیسے اکٹھی کرتے ہیں — تفصیل اور حقائق، یا نمونے اور امکانات۔">Next, we explore the lens through which you gather information — detail and facts, or patterns and possibilities.</p>
+  <div class="chapter-meta" data-en="15 Questions · ~3 Minutes" data-ur="15 سوالات · تقریباً 3 منٹ">15 Questions · ~3 Minutes</div>
+  <button class="btn-begin" onclick="beginChapter(2)" data-en="Continue" data-ur="جاری رکھیں">Continue</button>
+</div>
+
+<!-- ═══ CHAPTER 3 INTRO ═══ -->
+<div class="screen chapter-screen" id="chapter3">
+  <div class="chapter-num" data-en="Part Three of Four" data-ur="چار حصوں میں سے تیسرا">Part Three of Four</div>
+  <span class="chapter-glyph">⚖️</span>
+  <h1 class="chapter-title" data-en="How You<br><em>Decide</em>" data-ur="آپ کیسے<br><em>فیصلہ</em> کرتے ہیں">How You<br><em>Decide</em></h1>
+  <p class="chapter-desc" data-en="These questions reveal what drives your decisions — cool logic and analysis, or personal values and the people involved." data-ur="یہ سوالات ظاہر کریں گے کہ آپ کے فیصلوں کو کیا چلاتا ہے — منطق یا جذبات اور اقدار۔">These questions reveal what drives your decisions — cool logic and analysis, or personal values and the people involved.</p>
+  <div class="chapter-meta" data-en="15 Questions · ~3 Minutes" data-ur="15 سوالات · تقریباً 3 منٹ">15 Questions · ~3 Minutes</div>
+  <button class="btn-begin" onclick="beginChapter(3)" data-en="Continue" data-ur="جاری رکھیں">Continue</button>
+</div>
+
+<!-- ═══ CHAPTER 4 INTRO ═══ -->
+<div class="screen chapter-screen" id="chapter4">
+  <div class="chapter-num" data-en="Final Part" data-ur="آخری حصہ">Final Part</div>
+  <span class="chapter-glyph">🧭</span>
+  <h1 class="chapter-title" data-en="How You<br><em>Live</em> Your Life" data-ur="آپ اپنی زندگی<br>کیسے <em>گزارتے</em> ہیں">How You<br><em>Live</em> Your Life</h1>
+  <p class="chapter-desc" data-en="The last stretch. These questions look at how you structure your days — planned and certain, or open and spontaneous." data-ur="آخری حصہ۔ یہ سوالات آپ کے روزمرہ کے انتظام کے بارے میں ہیں — منصوبہ بند یا بے ساختہ۔">The last stretch. These questions look at how you structure your days — planned and certain, or open and spontaneous.</p>
+  <div class="chapter-meta" data-en="15 Questions · ~3 Minutes · Final Chapter" data-ur="15 سوالات · تقریباً 3 منٹ · آخری باب">15 Questions · ~3 Minutes · Final Chapter</div>
+  <button class="btn-begin" onclick="beginChapter(4)" data-en="Let's Finish" data-ur="مکمل کریں">Let's Finish</button>
+</div>
+
+<!-- ═══ QUESTION SCREEN ═══ -->
+<div class="screen question-screen" id="questionScreen">
+  <div class="q-context" id="qContext">Part One — Energy &amp; Social Style</div>
+  <div class="q-text" id="qText">Loading question...</div>
+  <div class="options">
+    <div class="option-card" id="optA" onclick="selectAnswer('a')">
+      <div class="option-inner">
+        <span class="opt-label">A</span>
+        <span class="opt-text" id="optAText">Option A</span>
+      </div>
+    </div>
+    <div class="option-card" id="optB" onclick="selectAnswer('b')">
+      <div class="option-inner">
+        <span class="opt-label">B</span>
+        <span class="opt-text" id="optBText">Option B</span>
+      </div>
+    </div>
+  </div>
+  <div class="q-nav">
+    <button class="btn-back" id="backBtn" onclick="goBack()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back
+    </button>
+    <div class="q-dots" id="qDots"></div>
+  </div>
+</div>
+
+<!-- ═══ CALCULATING ═══ -->
+<div class="screen calc-screen" id="calcScreen">
+  <div class="calc-orbit"></div>
+  <h2 class="calc-title">Analysing your <em>answers...</em></h2>
+  <p class="calc-sub">Mapping your personality profile</p>
+  <div class="calc-steps">
+    <div class="calc-step" id="cs1"><div class="step-dot"></div><span>Processing 60 responses</span></div>
+    <div class="calc-step" id="cs2"><div class="step-dot"></div><span>Calculating dimension scores</span></div>
+    <div class="calc-step" id="cs3"><div class="step-dot"></div><span>Matching personality type</span></div>
+    <div class="calc-step" id="cs4"><div class="step-dot"></div><span>Preparing your report</span></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════
+   ALL 60 QUESTIONS
+══════════════════════════════ */
+const questions = [
+  // E/I (1-15)
+  {id:1,dim:"E/I",pole:"E",a_en:"You enjoy meeting new people and chatting with everyone at the event.",b_en:"You prefer having one deep conversation with someone you already know.",a_ur:"آپ نئے لوگوں سے ملنا اور سب سے بات چیت کرنا پسند کرتے ہیں۔",b_ur:"آپ کسی جانے پہچانے شخص سے ایک گہری بات چیت کو ترجیح دیتے ہیں۔"},
+  {id:2,dim:"E/I",pole:"I",a_en:"After a draining week, you recharge by spending quiet time alone.",b_en:"After a draining week, you recharge by going out and being around people.",a_ur:"ایک تھکا دینے والے ہفتے کے بعد، آپ اکیلے خاموش وقت گزار کر توانائی واپس پاتے ہیں۔",b_ur:"ایک تھکا دینے والے ہفتے کے بعد، آپ باہر جا کر لوگوں کے ساتھ وقت گزار کر توانائی واپس پاتے ہیں۔"},
+  {id:3,dim:"E/I",pole:"E",a_en:"When you have good news, you want to tell everyone immediately.",b_en:"When you have good news, you think carefully about who you want to share it with.",a_ur:"جب آپ کے پاس اچھی خبر ہو، تو آپ فوری طور پر سب کو بتانا چاہتے ہیں۔",b_ur:"جب آپ کے پاس اچھی خبر ہو، تو آپ سوچتے ہیں کہ کسے بتانا ہے۔"},
+  {id:4,dim:"E/I",pole:"I",a_en:"In a group project, you prefer to work on your own part independently.",b_en:"In a group project, you naturally step up to coordinate and keep everyone connected.",a_ur:"گروپ پراجیکٹ میں، آپ اپنا حصہ اکیلے آزادانہ طور پر کرنا پسند کرتے ہیں۔",b_ur:"گروپ پراجیکٹ میں، آپ قدرتی طور پر آگے بڑھ کر سب کو منظم رکھتے ہیں۔"},
+  {id:5,dim:"E/I",pole:"E",a_en:"At a wedding or big family event, you love mingling and meeting new faces.",b_en:"At a wedding or big family event, you mostly stick to the people you already know.",a_ur:"شادی یا بڑے خاندانی تقریب میں، آپ نئے لوگوں سے ملنا پسند کرتے ہیں۔",b_ur:"شادی یا بڑے خاندانی تقریب میں، آپ زیادہ تر انہی لوگوں کے ساتھ رہتے ہیں جنہیں آپ جانتے ہیں۔"},
+  {id:6,dim:"E/I",pole:"I",a_en:"When solving a problem, you prefer to think it through alone before discussing it.",b_en:"When solving a problem, you think out loud and talk it through with others.",a_ur:"کوئی مسئلہ حل کرتے وقت، آپ پہلے اکیلے سوچنا پسند کرتے ہیں، پھر بات کرتے ہیں۔",b_ur:"کوئی مسئلہ حل کرتے وقت، آپ دوسروں کے ساتھ بات کرتے ہوئے سوچتے ہیں۔"},
+  {id:7,dim:"E/I",pole:"E",a_en:"Your ideal weekend involves going out, socialising, and exploring.",b_en:"Your ideal weekend involves staying home, reading, or working on personal projects.",a_ur:"آپ کا مثالی ویک اینڈ باہر جانے، ملنے جلنے اور نئی جگہیں دیکھنے پر مشتمل ہوتا ہے۔",b_ur:"آپ کا مثالی ویک اینڈ گھر میں رہنے، پڑھنے یا ذاتی کاموں پر توجہ دینے پر مشتمل ہوتا ہے۔"},
+  {id:8,dim:"E/I",pole:"I",a_en:"At work or university, you are generally seen as quiet and reserved until you know people well.",b_en:"At work or university, you are generally seen as outgoing and easy to approach.",a_ur:"کام یا یونیورسٹی میں، لوگ آپ کو عموماً خاموش اور محتاط سمجھتے ہیں جب تک آپ انہیں اچھی طرح نہ جانیں۔",b_ur:"کام یا یونیورسٹی میں، لوگ آپ کو عموماً ملنسار اور قابلِ رسائی سمجھتے ہیں۔"},
+  {id:9,dim:"E/I",pole:"E",a_en:"When making a big decision, you talk it over with several people to gather different views.",b_en:"When making a big decision, you prefer to figure it out on your own first.",a_ur:"کوئی بڑا فیصلہ کرتے وقت، آپ مختلف لوگوں سے رائے لیتے ہیں۔",b_ur:"کوئی بڑا فیصلہ کرتے وقت، آپ پہلے خود سوچ کر نتیجے پر پہنچنا پسند کرتے ہیں۔"},
+  {id:10,dim:"E/I",pole:"I",a_en:"In meetings or class discussions, you carefully consider before contributing.",b_en:"In meetings or class discussions, you speak up freely and share your thoughts openly.",a_ur:"میٹنگ یا کلاس میں، آپ بولنے سے پہلے اچھی طرح سوچتے ہیں۔",b_ur:"میٹنگ یا کلاس میں، آپ کھل کر اپنے خیالات بیان کرتے ہیں۔"},
+  {id:11,dim:"E/I",pole:"E",a_en:"After spending several hours with a large group, you feel energised and want to keep going.",b_en:"After spending several hours with a large group, you feel drained and need time alone to recover.",a_ur:"کئی گھنٹے بڑے گروپ کے ساتھ گزارنے کے بعد، آپ توانائی محسوس کرتے ہیں۔",b_ur:"کئی گھنٹے بڑے گروپ کے ساتھ گزارنے کے بعد، آپ تھکاوٹ محسوس کرتے ہیں اور اکیلے وقت چاہتے ہیں۔"},
+  {id:12,dim:"E/I",pole:"I",a_en:"You prefer work environments that are quiet and allow independent, focused work.",b_en:"You prefer work environments that are busy, collaborative, and team-oriented.",a_ur:"آپ ایسا کام کا ماحول پسند کرتے ہیں جو خاموش ہو اور آزادانہ توجہ کے ساتھ کام کرنے دے۔",b_ur:"آپ ایسا کام کا ماحول پسند کرتے ہیں جو مصروف اور ٹیم کے ساتھ مل کر چلنے والا ہو۔"},
+  {id:13,dim:"E/I",pole:"E",a_en:"When you are stressed or upset, you like to talk to someone about it.",b_en:"When you are stressed or upset, you prefer to process it quietly by yourself.",a_ur:"جب آپ پریشان یا ناخوش ہوتے ہیں، تو آپ کسی سے بات کرنا پسند کرتے ہیں۔",b_ur:"جب آپ پریشان یا ناخوش ہوتے ہیں، تو آپ اسے اکیلے خاموشی سے سمجھنے کی کوشش کرتے ہیں۔"},
+  {id:14,dim:"E/I",pole:"I",a_en:"In a new job or class, you observe and let friendships develop naturally over time.",b_en:"In a new job or class, you introduce yourself quickly and start making friends fast.",a_ur:"نئی نوکری یا کلاس میں، آپ پہلے مشاہدہ کرتے ہیں اور دوستیاں وقت کے ساتھ قدرتی طور پر بنتی ہیں۔",b_ur:"نئی نوکری یا کلاس میں، آپ جلدی سے اپنا تعارف کراتے ہیں اور دوستی بنانا شروع کر دیتے ہیں۔"},
+  {id:15,dim:"E/I",pole:"E",a_en:"Your circle of friends is wide — many acquaintances and connections across different areas.",b_en:"Your circle of friends is small but deep — a few very close, trusted relationships.",a_ur:"آپ کے دوستوں کا دائرہ وسیع ہے — مختلف شعبوں میں بہت سے جاننے والے۔",b_ur:"آپ کے دوستوں کا دائرہ چھوٹا مگر گہرا ہے — چند قریبی اور قابلِ اعتماد تعلقات۔"},
+  // S/N (16-30)
+  {id:16,dim:"S/N",pole:"S",a_en:"When learning something new, you prefer step-by-step instructions with clear examples.",b_en:"When learning something new, you prefer to understand the big picture first, then fill in the details.",a_ur:"کچھ نیا سیکھتے وقت، آپ مرحلہ وار ہدایات کو واضح مثالوں کے ساتھ پسند کرتے ہیں۔",b_ur:"کچھ نیا سیکھتے وقت، آپ پہلے مجموعی تصویر سمجھنا چاہتے ہیں۔"},
+  {id:17,dim:"S/N",pole:"N",a_en:"You often find yourself thinking about what could be rather than what currently is.",b_en:"You focus on what is real and present — you deal with facts, not hypotheticals.",a_ur:"آپ اکثر یہ سوچتے ہیں کہ کیا ہو سکتا ہے بجائے اس کے جو ابھی ہے۔",b_ur:"آپ جو حقیقی اور موجود ہے اس پر توجہ دیتے ہیں — آپ حقائق سے کام لیتے ہیں۔"},
+  {id:18,dim:"S/N",pole:"S",a_en:"You trust experience and proven methods over untested new approaches.",b_en:"You are drawn to new, untested approaches — the established way can always be improved.",a_ur:"آپ تجربے اور آزمودہ طریقوں پر بھروسہ کرتے ہیں۔",b_ur:"آپ نئے، غیر آزمودہ طریقوں کی طرف متوجہ ہوتے ہیں — پرانے طریقے کو بہتر بنایا جا سکتا ہے۔"},
+  {id:19,dim:"S/N",pole:"N",a_en:"You love exploring 'what if' questions — possibilities fascinate you more than certainties.",b_en:"You prefer concrete certainties to open-ended possibilities — you want answers, not more questions.",a_ur:"آپ 'کیا ہو اگر' سوالات دریافت کرنا پسند کرتے ہیں — امکانات آپ کو یقینوں سے زیادہ متوجہ کرتے ہیں۔",b_ur:"آپ کھلے ہوئے امکانات سے زیادہ ٹھوس یقینوں کو ترجیح دیتے ہیں۔"},
+  {id:20,dim:"S/N",pole:"S",a_en:"You have a good memory for specific facts, dates, and precise details.",b_en:"You remember the overall impression and meaning of things rather than specific details.",a_ur:"آپ کے پاس مخصوص حقائق، تاریخوں اور درست تفصیلات کی اچھی یادداشت ہے۔",b_ur:"آپ مخصوص تفصیلات کی بجائے چیزوں کا مجموعی تاثر یاد رکھتے ہیں۔"},
+  {id:21,dim:"S/N",pole:"N",a_en:"You often read between the lines — you pick up on patterns and hidden meanings.",b_en:"You take things at face value — you deal with what is said, not what might be implied.",a_ur:"آپ اکثر سطروں کے درمیان پڑھتے ہیں — آپ نمونوں اور پوشیدہ معانی پر نظر رکھتے ہیں۔",b_ur:"آپ چیزوں کو ظاہری قیمت پر لیتے ہیں — آپ جو کہا گیا اس سے کام لیتے ہیں۔"},
+  {id:22,dim:"S/N",pole:"S",a_en:"You prefer practical, hands-on work to abstract theorising or big-picture planning.",b_en:"You enjoy abstract thinking and strategic planning more than hands-on execution.",a_ur:"آپ تجریدی نظریہ سازی کی بجائے عملی، ہاتھ سے کام کرنا پسند کرتے ہیں۔",b_ur:"آپ ہاتھ سے عمل کرنے سے زیادہ تجریدی سوچ اور حکمت عملی کی منصوبہ بندی سے لطف اندوز ہوتے ہیں۔"},
+  {id:23,dim:"S/N",pole:"N",a_en:"When describing something, you naturally include context, meaning, and interpretation.",b_en:"When describing something, you stick to the facts — exactly what happened, nothing more.",a_ur:"کچھ بیان کرتے وقت، آپ قدرتی طور پر سیاق، معنی اور تشریح شامل کرتے ہیں۔",b_ur:"کچھ بیان کرتے وقت، آپ حقائق پر قائم رہتے ہیں — بالکل جو ہوا، اس سے زیادہ کچھ نہیں۔"},
+  {id:24,dim:"S/N",pole:"S",a_en:"You find abstract theories hard to engage with unless they have clear real-world applications.",b_en:"You love abstract theories and intellectual concepts even without immediate practical use.",a_ur:"آپ کو تجریدی نظریوں میں دلچسپی لینا مشکل لگتا ہے جب تک ان کا واضح عملی استعمال نہ ہو۔",b_ur:"آپ تجریدی نظریوں اور فکری تصورات سے محبت کرتے ہیں چاہے فوری عملی استعمال نہ ہو۔"},
+  {id:25,dim:"S/N",pole:"N",a_en:"You enjoy creative work that involves imagination, metaphor, and making connections.",b_en:"You prefer clear, literal communication — you say what you mean and mean what you say.",a_ur:"آپ تخلیقی کام سے لطف اٹھاتے ہیں جس میں تخیل، استعارہ اور روابط بنانا شامل ہے۔",b_ur:"آپ واضح، لفظی مواصلات کو ترجیح دیتے ہیں — آپ جو کہتے ہیں وہی مطلب ہوتا ہے۔"},
+  {id:26,dim:"S/N",pole:"S",a_en:"You prefer working with established facts and data rather than speculation or theories.",b_en:"You prefer speculating about future possibilities rather than analysing past data.",a_ur:"آپ قیاس آرائی یا نظریوں کی بجائے قائم حقائق اور ڈیٹا کے ساتھ کام کرنا پسند کرتے ہیں۔",b_ur:"آپ ماضی کے ڈیٹا کا تجزیہ کرنے کی بجائے مستقبل کے امکانات کے بارے میں قیاس آرائی کو ترجیح دیتے ہیں۔"},
+  {id:27,dim:"S/N",pole:"N",a_en:"You are more interested in the future and what things could become than the present state.",b_en:"You are most engaged with the present — what is happening right now matters most to you.",a_ur:"آپ مستقبل اور اس میں چیزیں کیا بن سکتی ہیں اس میں زیادہ دلچسپی رکھتے ہیں۔",b_ur:"آپ حال میں سب سے زیادہ مصروف ہیں — ابھی کیا ہو رہا ہے یہ آپ کے لیے سب سے زیادہ اہم ہے۔"},
+  {id:28,dim:"S/N",pole:"S",a_en:"You tend to be down-to-earth and practical in the way you approach challenges.",b_en:"You tend to be visionary and idealistic in the way you approach challenges.",a_ur:"آپ چیلنجز سے نمٹنے میں عموماً حقیقت پسند اور عملی ہوتے ہیں۔",b_ur:"آپ چیلنجز سے نمٹنے میں عموماً وژنری اور آئیڈیلسٹ ہوتے ہیں۔"},
+  {id:29,dim:"S/N",pole:"N",a_en:"Brainstorming and generating new ideas energises you more than executing and implementing them.",b_en:"Executing and getting things done energises you more than brainstorming new ideas.",a_ur:"نئے خیالات تخلیق کرنا آپ کو ان پر عمل کرنے سے زیادہ توانائی بخشتا ہے۔",b_ur:"چیزیں مکمل کرنا آپ کو نئے خیالات سوچنے سے زیادہ توانائی بخشتا ہے۔"},
+  {id:30,dim:"S/N",pole:"S",a_en:"You are a realist — you see things as they are and base decisions on what is proven.",b_en:"You are an optimist and visionary — you always see what could be, not just what is.",a_ur:"آپ ایک حقیقت پسند ہیں — آپ چیزوں کو جیسی وہ ہیں ویسی دیکھتے ہیں۔",b_ur:"آپ ایک پُرامید اور وژنری ہیں — آپ ہمیشہ دیکھتے ہیں کہ کیا ہو سکتا ہے۔"},
+  // T/F (31-45)
+  {id:31,dim:"T/F",pole:"T",a_en:"When giving feedback, you focus on what is logical and accurate, even if it may be hard to hear.",b_en:"When giving feedback, you think carefully about how to deliver it kindly, even if it softens the message.",a_ur:"فیڈبیک دیتے وقت، آپ اس بات پر توجہ دیتے ہیں جو منطقی اور درست ہے، چاہے یہ سنتے وقت مشکل ہو۔",b_ur:"فیڈبیک دیتے وقت، آپ سوچتے ہیں کہ اسے مہربانی سے کیسے پہنچائیں۔"},
+  {id:32,dim:"T/F",pole:"F",a_en:"A decision feels right to you when it aligns with your values and the people involved, not just the data.",b_en:"A decision feels right to you when the logic is solid and the reasoning is airtight.",a_ur:"فیصلہ آپ کو درست لگتا ہے جب یہ آپ کی اقدار اور متعلقہ لوگوں کے ساتھ مطابقت رکھتا ہو۔",b_ur:"فیصلہ آپ کو درست لگتا ہے جب منطق ٹھوس اور استدلال پختہ ہو۔"},
+  {id:33,dim:"T/F",pole:"T",a_en:"When someone comes to you with a problem, you naturally jump to solutions and practical advice.",b_en:"When someone comes to you with a problem, you first make sure they feel heard before offering any advice.",a_ur:"جب کوئی آپ کے پاس مسئلہ لے کر آتا ہے، تو آپ قدرتی طور پر حل اور عملی مشوروں پر جمپ کرتے ہیں۔",b_ur:"جب کوئی آپ کے پاس مسئلہ لے کر آتا ہے، تو آپ پہلے یقین دہانی کراتے ہیں کہ وہ سنا گیا ہے۔"},
+  {id:34,dim:"T/F",pole:"F",a_en:"You find it genuinely important that the people around you feel good and valued.",b_en:"You find results and outcomes more important than whether everyone feels happy about the process.",a_ur:"آپ کو واقعی اہم لگتا ہے کہ آپ کے آس پاس کے لوگ اچھا اور قدر محسوس کریں۔",b_ur:"آپ کو نتائج زیادہ اہم لگتے ہیں بجائے اس کے کہ سب عمل سے خوش ہوں۔"},
+  {id:35,dim:"T/F",pole:"T",a_en:"In an argument, you stay calm, rational, and focused on the facts rather than getting emotional.",b_en:"In an argument, you find it hard to fully detach emotionally — the relationship matters as much as the issue.",a_ur:"بحث میں، آپ پُرسکون، منطقی رہتے ہیں اور جذباتی ہونے کی بجائے حقائق پر توجہ دیتے ہیں۔",b_ur:"بحث میں، آپ کو جذباتی طور پر مکمل طور پر الگ رہنا مشکل لگتا ہے۔"},
+  {id:36,dim:"T/F",pole:"F",a_en:"When making an important decision, you imagine how it will affect the people around you.",b_en:"When making an important decision, you focus on the most logical outcome, regardless of who it impacts.",a_ur:"اہم فیصلہ کرتے وقت، آپ تصور کرتے ہیں کہ اس کا آپ کے آس پاس کے لوگوں پر کیا اثر پڑے گا۔",b_ur:"اہم فیصلہ کرتے وقت، آپ سب سے منطقی نتیجے پر توجہ دیتے ہیں، قطع نظر اس کے کہ کون متاثر ہو۔"},
+  {id:37,dim:"T/F",pole:"T",a_en:"You believe that honesty is more important than tactfulness — the truth is always preferable.",b_en:"You believe that how you say something matters as much as what you say — tone is never separate from content.",a_ur:"آپ کا ماننا ہے کہ ایمانداری تدبر سے زیادہ اہم ہے — سچ ہمیشہ قابل ترجیح ہے۔",b_ur:"آپ کا ماننا ہے کہ آپ کچھ کیسے کہتے ہیں اتنا ہی اہم ہے جتنا آپ کیا کہتے ہیں۔"},
+  {id:38,dim:"T/F",pole:"F",a_en:"You feel genuine discomfort when there is conflict or tension in a group — you want harmony.",b_en:"You can tolerate conflict and tension without much discomfort — it is just part of working things out.",a_ur:"آپ گروپ میں تنازعہ یا کشیدگی ہونے پر حقیقی تکلیف محسوس کرتے ہیں — آپ ہم آہنگی چاہتے ہیں۔",b_ur:"آپ بہت زیادہ تکلیف کے بغیر تنازعہ اور کشیدگی برداشت کر سکتے ہیں۔"},
+  {id:39,dim:"T/F",pole:"T",a_en:"When evaluating someone's work, you give weight to the quality of the output over their effort.",b_en:"When evaluating someone's work, you consider their effort and intention as much as the output itself.",a_ur:"کسی کے کام کا جائزہ لیتے وقت، آپ ان کی محنت سے زیادہ نتیجے کو اہمیت دیتے ہیں۔",b_ur:"کسی کے کام کا جائزہ لیتے وقت، آپ ان کی کوشش اور نیت کو اتنی ہی اہمیت دیتے ہیں۔"},
+  {id:40,dim:"T/F",pole:"F",a_en:"Knowing that your work made a meaningful difference to someone matters more than recognition.",b_en:"Knowing that your work was objectively excellent matters more than the impact it had on individuals.",a_ur:"یہ جاننا کہ آپ کے کام نے کسی کے لیے معنی خیز فرق ڈالا، تعریف سے زیادہ اہم ہے۔",b_ur:"یہ جاننا کہ آپ کا کام معروضی طور پر بہترین تھا، اس سے زیادہ اہم ہے۔"},
+  {id:41,dim:"T/F",pole:"T",a_en:"You would rather hear an uncomfortable truth than a comfortable half-truth.",b_en:"You sometimes prefer a gentler version of the truth if it spares unnecessary hurt.",a_ur:"آپ غیر آرامدہ سچ سننا پسند کریں گے بجائے ایک آرامدہ نیم سچ کے۔",b_ur:"آپ کبھی کبھی سچ کا نرم ورژن پسند کرتے ہیں اگر اس سے غیر ضروری تکلیف بچے۔"},
+  {id:42,dim:"T/F",pole:"F",a_en:"People sometimes describe you as warm, empathetic, and deeply caring about others.",b_en:"People sometimes describe you as analytical, objective, and good at cutting through emotion to find clarity.",a_ur:"لوگ کبھی کبھی آپ کو گرمجوش، ہمدرد اور دوسروں کی گہری پرواہ کرنے والا کہتے ہیں۔",b_ur:"لوگ کبھی کبھی آپ کو تجزیاتی، معروضی اور جذبات کاٹ کر وضاحت تلاش کرنے میں ماہر کہتے ہیں۔"},
+  {id:43,dim:"T/F",pole:"T",a_en:"In group decisions, you advocate for what is objectively the best outcome, even if unpopular.",b_en:"In group decisions, you look for a solution that everyone can feel good about, even if it is not optimal.",a_ur:"گروپ فیصلوں میں، آپ اس کی وکالت کرتے ہیں جو معروضی طور پر بہترین نتیجہ ہو، چاہے یہ غیر مقبول ہو۔",b_ur:"گروپ فیصلوں میں، آپ ایسا حل تلاش کرتے ہیں جس سے سب اچھا محسوس کر سکیں۔"},
+  {id:44,dim:"T/F",pole:"F",a_en:"You take it personally when someone criticises something you genuinely care about.",b_en:"You can separate criticism of your work from your sense of self — feedback does not rattle you.",a_ur:"آپ اسے ذاتی طور پر لیتے ہیں جب کوئی آپ کی اس چیز پر تنقید کرتا ہے جس کی آپ پرواہ کرتے ہیں۔",b_ur:"آپ اپنے کام کی تنقید کو اپنے احساس سے الگ کر سکتے ہیں — فیڈبیک آپ کو نہیں ہلاتا۔"},
+  {id:45,dim:"T/F",pole:"T",a_en:"People who know you well would say you are logical, direct, and emotionally consistent.",b_en:"People who know you well would say you are warm, caring, and emotionally in tune with those around you.",a_ur:"جو لوگ آپ کو اچھی طرح جانتے ہیں، وہ کہیں گے کہ آپ منطقی، سیدھے اور جذباتی طور پر مستقل ہیں۔",b_ur:"جو لوگ آپ کو اچھی طرح جانتے ہیں، وہ کہیں گے کہ آپ گرمجوش، خیال رکھنے والے ہیں۔"},
+  // J/P (46-60)
+  {id:46,dim:"J/P",pole:"J",a_en:"Your room or workspace is organised — everything has a place and you like it that way.",b_en:"Your room or workspace has its own system — organised chaos that makes sense to you.",a_ur:"آپ کا کمرہ یا کام کی جگہ منظم ہے — ہر چیز کا ایک مقام ہے اور آپ اسی طرح پسند کرتے ہیں۔",b_ur:"آپ کے کمرے کا اپنا نظام ہے — ایک منظم انتشار جو آپ کو سمجھ میں آتا ہے۔"},
+  {id:47,dim:"J/P",pole:"J",a_en:"When you have a deadline, you plan ahead and aim to finish well before the last day.",b_en:"When you have a deadline, you often do your best work under pressure close to the last day.",a_ur:"جب آخری تاریخ ہو، تو آپ پہلے سے منصوبہ بناتے ہیں اور آخری دن سے پہلے کام ختم کرنا چاہتے ہیں۔",b_ur:"جب آخری تاریخ ہو، تو آپ اکثر آخری وقت کے دباؤ میں اپنا بہترین کام کرتے ہیں۔"},
+  {id:48,dim:"J/P",pole:"P",a_en:"You prefer your day to be flexible and open — you figure out what to do as you go.",b_en:"You prefer your day to be planned out with a clear structure from the start.",a_ur:"آپ اپنا دن لچکدار اور کھلا رکھنا پسند کرتے ہیں — آپ چلتے چلتے فیصلہ کرتے ہیں۔",b_ur:"آپ اپنا دن شروع سے واضح ڈھانچے کے ساتھ منصوبہ بند رکھنا پسند کرتے ہیں۔"},
+  {id:49,dim:"J/P",pole:"J",a_en:"When starting a project, you define a clear plan and milestones before beginning any work.",b_en:"When starting a project, you dive in and adjust your approach as you learn more along the way.",a_ur:"کوئی پراجیکٹ شروع کرتے وقت، آپ کام شروع کرنے سے پہلے واضح منصوبہ اور مراحل طے کرتے ہیں۔",b_ur:"کوئی پراجیکٹ شروع کرتے وقت، آپ کام میں کود پڑتے ہیں اور چلتے چلتے اپنا طریقہ بدلتے رہتے ہیں۔"},
+  {id:50,dim:"J/P",pole:"P",a_en:"Unexpected changes to plans do not bother you much — you adapt easily and move forward.",b_en:"Unexpected changes to plans frustrate you — you prefer things to go as decided.",a_ur:"منصوبوں میں اچانک تبدیلیاں آپ کو زیادہ پریشان نہیں کرتیں — آپ آسانی سے ڈھل جاتے ہیں۔",b_ur:"منصوبوں میں اچانک تبدیلیاں آپ کو پریشان کرتی ہیں — آپ چاہتے ہیں کہ چیزیں جیسا طے ہوا ویسے چلیں۔"},
+  {id:51,dim:"J/P",pole:"J",a_en:"You find it more satisfying to complete things fully and close them off.",b_en:"You find it more satisfying to keep options open and continue exploring different directions.",a_ur:"آپ کو چیزوں کو مکمل کر کے ختم کرنے میں زیادہ اطمینان ملتا ہے۔",b_ur:"آپ کو اختیارات کھلے رکھنے اور مختلف سمتوں کو دریافت کرتے رہنے میں زیادہ اطمینان ملتا ہے۔"},
+  {id:52,dim:"J/P",pole:"P",a_en:"Your to-do list exists loosely in your head or gets updated constantly as new things come up.",b_en:"Your to-do list is carefully written and you work through it systematically.",a_ur:"آپ کی کاموں کی فہرست ذہن میں تقریباً موجود رہتی ہے یا نئی چیزیں آنے پر مسلسل بدلتی رہتی ہے۔",b_ur:"آپ کی کاموں کی فہرست احتیاط سے لکھی ہوئی ہے اور آپ اسے منظم طریقے سے مکمل کرتے ہیں۔"},
+  {id:53,dim:"J/P",pole:"J",a_en:"When making a purchase, you research, decide on one option, and stick with your choice.",b_en:"When making a purchase, you browse widely and often change your mind before deciding.",a_ur:"خریداری کرتے وقت، آپ تحقیق کرتے ہیں، ایک آپشن چنتے ہیں اور اپنے فیصلے پر قائم رہتے ہیں۔",b_ur:"خریداری کرتے وقت، آپ بہت زیادہ دیکھتے ہیں اور فیصلہ کرنے سے پہلے اکثر رائے بدلتے رہتے ہیں۔"},
+  {id:54,dim:"J/P",pole:"P",a_en:"You feel most comfortable when things are still open and all possibilities remain available.",b_en:"You feel most comfortable when things are decided, settled, and under control.",a_ur:"آپ سب سے زیادہ آرامدہ محسوس کرتے ہیں جب چیزیں ابھی کھلی ہوں اور تمام امکانات موجود ہوں۔",b_ur:"آپ سب سے زیادہ آرامدہ محسوس کرتے ہیں جب چیزیں طے شدہ، حل شدہ اور قابو میں ہوں۔"},
+  {id:55,dim:"J/P",pole:"J",a_en:"At work or university, you are seen as reliable and consistent — you deliver what you promise.",b_en:"At work or university, you are seen as adaptable and spontaneous — you handle surprises well.",a_ur:"کام یا یونیورسٹی میں، آپ کو قابلِ اعتماد اور مستقل سمجھا جاتا ہے — آپ جو وعدہ کریں وہ پورا کرتے ہیں۔",b_ur:"کام یا یونیورسٹی میں، آپ کو موافق اور بے ساختہ سمجھا جاتا ہے — آپ اچانک صورتحال کو اچھی طرح سنبھالتے ہیں۔"},
+  {id:56,dim:"J/P",pole:"P",a_en:"When a rule feels unnecessary to you, you question it and find your own way of doing things.",b_en:"When a rule feels unnecessary to you, you still follow it because rules exist for a reason.",a_ur:"جب کوئی قانون آپ کو غیر ضروری لگے، تو آپ اسے چیلنج کرتے ہیں اور اپنا راستہ نکالتے ہیں۔",b_ur:"جب کوئی قانون آپ کو غیر ضروری لگے، تو بھی آپ اس پر عمل کرتے ہیں کیونکہ قوانین وجہ سے بنتے ہیں۔"},
+  {id:57,dim:"J/P",pole:"J",a_en:"Before making a big life decision, you need a clear plan and to feel certain before acting.",b_en:"Before making a big life decision, you are comfortable acting while more information comes in.",a_ur:"زندگی کا کوئی بڑا فیصلہ کرنے سے پہلے، آپ کو واضح منصوبے اور یقین کی ضرورت ہوتی ہے۔",b_ur:"زندگی کا کوئی بڑا فیصلہ کرنے سے پہلے، آپ مزید معلومات آنے کے ساتھ ساتھ آگے بڑھنے میں آرامدہ محسوس کرتے ہیں۔"},
+  {id:58,dim:"J/P",pole:"P",a_en:"Your approach to free time is spontaneous — you see what you feel like doing when the moment arrives.",b_en:"Your approach to free time is planned — you usually decide in advance how you will spend it.",a_ur:"آپ اپنا فارغ وقت بے ساختہ گزارتے ہیں — جب وقت آئے تو دیکھتے ہیں کہ دل کیا چاہتا ہے۔",b_ur:"آپ اپنا فارغ وقت پہلے سے منصوبہ بنا کر گزارتے ہیں — آپ پہلے طے کر لیتے ہیں کہ کیا کریں گے۔"},
+  {id:59,dim:"J/P",pole:"J",a_en:"You would describe your life as structured and organised around clear goals and timelines.",b_en:"You would describe your life as spontaneous and shaped by what excites you in the moment.",a_ur:"آپ اپنی زندگی کو واضح اہداف اور ٹائم لائنز کے گرد منظم اور ترتیب یافتہ کہیں گے۔",b_ur:"آپ اپنی زندگی کو بے ساختہ اور اس وقت کی دلچسپی سے ڈھلتی ہوئی کہیں گے۔"},
+  {id:60,dim:"J/P",pole:"P",a_en:"When a project is mostly done but not finalised, you are comfortable moving on and returning to it.",b_en:"When a project is mostly done but not finalised, you feel uneasy until it is fully complete.",a_ur:"جب کوئی پراجیکٹ تقریباً مکمل ہو لیکن حتمی نہ ہوا ہو، تو آپ آگے بڑھنے اور بعد میں واپس آنے میں آرامدہ محسوس کرتے ہیں۔",b_ur:"جب کوئی پراجیکٹ تقریباً مکمل ہو لیکن حتمی نہ ہوا ہو، تو آپ بے چین رہتے ہیں جب تک مکمل نہ ہو جائے۔"}
+];
+
+const chapterContexts = {
+  en: ["Part One — Energy & Social Style","Part One — Energy & Social Style","Part Two — How You See the World","Part Three — How You Decide","Part Four — How You Live"],
+  ur: ["حصہ اول — توانائی اور سماجی انداز","حصہ اول — توانائی اور سماجی انداز","حصہ دوم — آپ دنیا کو کیسے دیکھتے ہیں","حصہ سوم — آپ کیسے فیصلہ کرتے ہیں","حصہ چہارم — آپ کیسے جیتے ہیں"]
+};
+
+function getChapterIdx(qIdx) {
+  if (qIdx < 15) return 1;
+  if (qIdx < 30) return 2;
+  if (qIdx < 45) return 3;
+  return 4;
+}
+
+/* ── STATE ── */
+// ✅ START TEST (CREATE ATTEMPT)
+async function startTest() {
+  console.log("🔥 startTest called");
+
+  const user_id = localStorage.getItem("user_id");
+
+  if (!user_id) {
+    alert("User not logged in");
+    return;
+  }
+
+  try {
+   const res = await fetch(`https://web-production-1f476a.up.railway.app/start-test?user_id=${user_id}`, {
+      method: "POST"
+    });
+
+    console.log("Status:", res.status);
+
+    const data = await res.json();
+    console.log("Response:", data);
+
+    if (!res.ok) {
+      alert("Failed to start test");
+      return;
+    }
+
+    localStorage.setItem("attempt_id", data.attempt_id);
+
+    console.log("✅ attempt_id saved:", data.attempt_id);
+
+  } catch (err) {
+    console.error("❌ Error:", err);
+  }
+}
+
+
+// ✅ SAVE ANSWER
+async function saveAnswer(question_id, selected_option) {
+  const attempt_id = localStorage.getItem("attempt_id");
+  if (!attempt_id) return;
+
+  await fetch("https://web-production-1f476a.up.railway.app/answer", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+  attempt_id: parseInt(attempt_id),
+  question_id,
+  selected_option
+})
+  });
+}
+
+
+// ✅ COMPLETE TEST
+async function completeTest(result_type) {
+  const attempt_id = parseInt(localStorage.getItem("attempt_id"));
+
+  await fetch(`https://web-production-1f476a.up.railway.app/complete-test?attempt_id=${attempt_id}&result_type=${result_type}`, {
+    method: "POST"
+  });
+}
+
+let currentQ = 0;     // 0-59
+let answers = new Array(60).fill(null);
+let lang = 'en';
+let isAnswering = false;
+
+/* ── SHOW/HIDE SCREENS ── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.opacity = '';
+    s.style.transform = '';
+  });
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+/* ── BEGIN CHAPTER ── */
+async function beginChapter(num) {
+if (!localStorage.getItem("attempt_id")) {
+  await startTest();
+}
+
+  showScreen('questionScreen');
+
+  if (num === 1) currentQ = 0;
+  else if (num === 2) currentQ = 15;
+  else if (num === 3) currentQ = 30;
+  else currentQ = 45;
+
+  renderQuestion();
+}
+
+/* ── RENDER QUESTION ── */
+function renderQuestion() {
+  const q = questions[currentQ];
+  const isUrdu = lang === 'ur';
+
+  document.getElementById('qNumDisplay').textContent = currentQ + 1;
+  document.getElementById('progressFill').style.width = ((currentQ) / 60 * 100) + '%';
+
+  const chIdx = getChapterIdx(currentQ);
+  const ctxArr = chapterContexts[lang];
+  document.getElementById('qContext').textContent = ctxArr[chIdx];
+
+  document.getElementById('qText').textContent = isUrdu ? `${q.id}. ${q.a_ur ? q.id + '. ' : ''}` + '' : '';
+  // Set question — we use a scenario prompt
+  const qLabel = isUrdu
+    ? `سوال ${q.id}: آپ کی صورتحال میں، کون سا بیان آپ کو بہتر بیان کرتا ہے؟`
+    : `Imagine this situation — which description fits you better?`;
+  document.getElementById('qText').textContent = qLabel;
+
+  document.getElementById('optAText').textContent = isUrdu ? q.a_ur : q.a_en;
+  document.getElementById('optBText').textContent = isUrdu ? q.b_ur : q.b_en;
+
+  // Restore selection if returning
+  const saved = answers[currentQ];
+  document.getElementById('optA').classList.toggle('selected', saved === 'a');
+  document.getElementById('optB').classList.toggle('selected', saved === 'b');
+
+  // Back button
+  const backBtn = document.getElementById('backBtn');
+  backBtn.disabled = currentQ === 0;
+
+  // Dots (show last 5 in chapter)
+  renderDots();
+}
+
+function renderDots() {
+  const chStart = Math.floor(currentQ / 15) * 15;
+  const posInChapter = currentQ - chStart;
+  const dotsEl = document.getElementById('qDots');
+  dotsEl.innerHTML = '';
+  for (let i = 0; i < 15; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'q-dot' + (i < posInChapter ? ' done' : '') + (i === posInChapter ? ' current' : '');
+    dotsEl.appendChild(dot);
+  }
+}
+
+/* ── SELECT ANSWER ── */
+function selectAnswer(choice) {
+  if (isAnswering) return;
+  isAnswering = true;
+
+  answers[currentQ] = choice;
+
+  saveAnswer(currentQ + 1, choice);
+
+
+  document.getElementById('optA').classList.toggle('selected', choice === 'a');
+  document.getElementById('optB').classList.toggle('selected', choice === 'b');
+  const selected = document.getElementById(choice === 'a' ? 'optA' : 'optB');
+  selected.classList.add('correct-glow');
+
+  document.getElementById('progressFill').style.width = ((currentQ + 1) / 60 * 100) + '%';
+
+  setTimeout(() => {
+    selected.classList.remove('correct-glow');
+    advanceQuestion();
+    isAnswering = false;
+  }, 380);
+}
+
+/* ── ADVANCE ── */
+function advanceQuestion() {
+  if (currentQ >= 59) {
+    finishTest();
+    return;
+  }
+
+  const nextQ = currentQ + 1;
+  const prevChapter = getChapterIdx(currentQ);
+  const nextChapter = getChapterIdx(nextQ);
+
+  if (prevChapter !== nextChapter) {
+    // Show chapter intro
+    currentQ = nextQ;
+    showScreen('chapter' + nextChapter);
+  } else {
+    currentQ = nextQ;
+    // Animate question transition
+    const qs = document.getElementById('questionScreen');
+    qs.style.opacity = '0';
+    qs.style.transform = 'translateX(-20px)';
+    setTimeout(() => {
+      renderQuestion();
+      qs.style.opacity = '';
+      qs.style.transform = '';
+    }, 220);
+  }
+}
+
+/* ── GO BACK ── */
+function goBack() {
+  if (currentQ === 0) return;
+  const prevChapter = getChapterIdx(currentQ);
+  currentQ--;
+  const newChapter = getChapterIdx(currentQ);
+  if (prevChapter !== newChapter) {
+    showScreen('questionScreen');
+  }
+  renderQuestion();
+}
+
+/* ── FINISH & SCORE ── */
+function finishTest() {
+  showScreen('calcScreen');
+  document.getElementById('qNumDisplay').textContent = '60';
+  document.getElementById('progressFill').style.width = '100%';
+
+  // Calculate MBTI
+  const opposites = {E:'I',I:'E',S:'N',N:'S',T:'F',F:'T',J:'P',P:'J'};
+  const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+  questions.forEach((q, i) => {
+    const ans = answers[i] || 'a';
+    if (ans === 'a') scores[q.pole]++;
+    else scores[opposites[q.pole]]++;
+  });
+
+  const mbtiType =
+    (scores.E >= scores.I ? 'E' : 'I') +
+    (scores.S >= scores.N ? 'S' : 'N') +
+    (scores.T >= scores.F ? 'T' : 'F') +
+    (scores.J >= scores.P ? 'J' : 'P');
+
+    // ✅ SEND RESULT TO BACKEND
+completeTest(mbtiType);
+
+  localStorage.setItem('mizaj_mbti', mbtiType);
+  localStorage.setItem('mizaj_scores', JSON.stringify(scores));
+  localStorage.setItem('mizaj_answers', JSON.stringify(answers));
+
+  // Animate calc steps
+  const steps = ['cs1','cs2','cs3','cs4'];
+  steps.forEach((id, i) => {
+    setTimeout(() => {
+      document.getElementById(id).classList.add('show');
+      setTimeout(() => document.getElementById(id).classList.add('done'), 400);
+    }, i * 700 + 400);
+  });
+
+  setTimeout(() => {
+    window.location.href = 'mizaj-results.html';
+  }, 4200);
+}
+
+/* ── LANGUAGE TOGGLE ── */
+function toggleLang() {
+  lang = lang === 'en' ? 'ur' : 'en';
+  document.body.classList.toggle('urdu', lang === 'ur');
+  document.documentElement.setAttribute('dir', lang === 'ur' ? 'rtl' : 'ltr');
+  document.getElementById('enLabel').classList.toggle('active', lang === 'en');
+  document.getElementById('urLabel').classList.toggle('active', lang === 'ur');
+  // Refresh question text if on question screen
+  const qs = document.getElementById('questionScreen');
+  if (qs.classList.contains('active')) renderQuestion();
+  // Update chapter screens
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = lang === 'ur' ? el.getAttribute('data-ur') : el.getAttribute('data-en');
+    if (val) el.innerHTML = val;
+  });
+}
+
+/* ── KEYBOARD ── */
+document.addEventListener('keydown', e => {
+  const qs = document.getElementById('questionScreen');
+  if (!qs.classList.contains('active')) return;
+  if (e.key === 'a' || e.key === 'A' || e.key === '1') selectAnswer('a');
+  if (e.key === 'b' || e.key === 'B' || e.key === '2') selectAnswer('b');
+  if (e.key === 'ArrowLeft' || e.key === 'Backspace') goBack();
+});
+</script>
+</body>
+</html>

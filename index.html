@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mizaj — Discover Who You Truly Are</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0D0D12;--ink-soft:#1A1A24;--ink-mid:#2B2B38;--gold:#C9A84C;--gold-light:#E8CC7A;--gold-dim:rgba(201,168,76,0.15);--cream:#F5F0E8;--muted:#6B6B7E;--card-bg:rgba(255,255,255,0.035);--border:rgba(201,168,76,0.18);--border-soft:rgba(255,255,255,0.07)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+.geo-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.geo-bg svg{width:100%;height:100%;opacity:.04}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 6%;border-bottom:1px solid transparent;transition:all .4s ease;backdrop-filter:blur(0px)}
+nav.scrolled{background:rgba(13,13,18,.88);border-bottom-color:var(--border-soft);backdrop-filter:blur(20px)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-decoration:none;text-transform:uppercase}
+.nav-logo span{display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%;margin-left:4px;vertical-align:middle;margin-bottom:4px}
+.nav-right{display:flex;align-items:center;gap:32px}
+.lang-toggle{display:flex;align-items:center;gap:10px;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:color .3s}
+.lang-toggle:hover{color:var(--gold)}
+.btn-nav{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:9px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .3s ease}
+.btn-nav:hover{background:var(--gold);color:var(--ink)}
+section{position:relative;z-index:1}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:140px 6% 100px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none}
+.hero-glow-2{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(100,80,200,.08) 0%,transparent 70%);bottom:0;right:10%;pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--gold-dim);padding:7px 18px;font-size:.73rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-light);margin-bottom:36px;animation:fadeUp .8s ease both}
+.hero-badge::before{content:'';width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(3.2rem,8vw,7.5rem);font-weight:300;line-height:1.02;letter-spacing:-.01em;margin-bottom:28px;animation:fadeUp .8s .1s ease both}
+.hero h1 em{font-style:italic;color:var(--gold);display:block}
+.hero-sub{font-size:clamp(1rem,1.8vw,1.22rem);color:rgba(245,240,232,.62);max-width:560px;margin:0 auto 48px;font-weight:300;line-height:1.75;animation:fadeUp .8s .2s ease both}
+.hero-actions{display:flex;align-items:center;gap:20px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .3s ease both}
+.btn-primary{background:var(--gold);color:var(--ink);padding:16px 38px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .3s ease;position:relative;overflow:hidden;display:inline-block}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);opacity:0;transition:opacity .3s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.35)}
+.btn-primary:hover::after{opacity:1}
+.btn-ghost{color:rgba(245,240,232,.7);font-size:.85rem;letter-spacing:.08em;text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .3s}
+.btn-ghost:hover{color:var(--cream)}
+.hero-stat-row{display:flex;align-items:center;gap:40px;justify-content:center;margin-top:60px;flex-wrap:wrap;animation:fadeUp .8s .4s ease both}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--gold);line-height:1}
+.hero-stat-label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.stat-divider{width:1px;height:40px;background:var(--border-soft)}
+.scroll-hint{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);animation:fadeUp 1s .8s ease both}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollDrop 2s ease-in-out infinite}
+@keyframes scrollDrop{0%,100%{transform:scaleY(1) translateY(0);opacity:1}50%{transform:scaleY(.6) translateY(8px);opacity:.4}}
+.marquee-strip{border-top:1px solid var(--border-soft);border-bottom:1px solid var(--border-soft);padding:16px 0;overflow:hidden;background:rgba(201,168,76,.03)}
+.marquee-track{display:flex;animation:marquee 28s linear infinite;width:max-content}
+.marquee-item{display:flex;align-items:center;gap:20px;padding:0 40px;font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.marquee-item .dot{color:var(--gold);font-size:1.2rem}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.section-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.section-eyebrow::before,.section-eyebrow::after{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,4.5vw,4rem);font-weight:300;line-height:1.1;margin-bottom:20px}
+.section-title em{font-style:italic;color:var(--gold)}
+.section-body{font-size:1.05rem;color:rgba(245,240,232,.6);max-width:540px;line-height:1.75;font-weight:300}
+.discover{padding:110px 6%}
+.discover-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.discover-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.discover-card{background:var(--card-bg);border:1px solid var(--border-soft);padding:28px 24px;transition:all .4s ease;position:relative;overflow:hidden}
+.discover-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-dim),transparent);opacity:0;transition:opacity .4s}
+.discover-card:hover{border-color:var(--border);transform:translateY(-3px)}
+.discover-card:hover::before{opacity:1}
+.discover-card-icon{font-size:1.6rem;margin-bottom:14px;display:block}
+.discover-card h3{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;margin-bottom:8px;color:var(--cream)}
+.discover-card p{font-size:.85rem;color:var(--muted);line-height:1.65}
+.how{padding:110px 6%;background:linear-gradient(to bottom,transparent,rgba(201,168,76,.025),transparent)}
+.how-inner{max-width:1100px;margin:0 auto}
+.how-header{text-align:center;margin-bottom:70px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;position:relative}
+.step{padding:48px 36px;background:var(--card-bg);border:1px solid var(--border-soft);position:relative;transition:all .4s ease}
+.step:hover{background:rgba(201,168,76,.04);border-color:var(--border)}
+.step-num{font-family:'Cormorant Garamond',serif;font-size:4.5rem;font-weight:300;color:rgba(201,168,76,.15);line-height:1;margin-bottom:24px;position:relative}
+.step h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;margin-bottom:12px}
+.step p{font-size:.9rem;color:var(--muted);line-height:1.7}
+.preview{padding:110px 6%;overflow:hidden}
+.preview-inner{max-width:1200px;margin:0 auto}
+.preview-header{text-align:center;margin-bottom:60px}
+.cards-strip{display:flex;gap:20px;overflow-x:hidden;padding:20px 0}
+.cards-row-1{animation:scrollLeft 30s linear infinite;width:max-content;display:flex;gap:20px}
+@keyframes scrollLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.p-card{min-width:200px;border:1px solid var(--border-soft);padding:28px 22px;position:relative;overflow:hidden;transition:transform .3s;flex-shrink:0}
+.p-card:hover{transform:translateY(-4px)}
+.p-card-type{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;letter-spacing:.05em;color:white;margin-bottom:4px}
+.p-card-tag{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:20px;opacity:.7}
+.p-card-traits{display:flex;flex-direction:column;gap:6px}
+.p-card-trait{font-size:.75rem;opacity:.6;display:flex;align-items:center;gap:6px}
+.p-card-trait::before{content:'—';opacity:.4}
+.p-card-blur{filter:blur(6px);opacity:.4}
+.p-card-glow{position:absolute;bottom:-30px;right:-30px;width:100px;height:100px;border-radius:50%;opacity:.3}
+.report{padding:110px 6%}
+.report-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.2fr;gap:90px;align-items:center}
+.report-list{display:flex;flex-direction:column}
+.report-item{display:flex;gap:20px;align-items:flex-start;padding:22px 0;border-bottom:1px solid var(--border-soft);transition:all .3s;cursor:default}
+.report-item:first-child{border-top:1px solid var(--border-soft)}
+.report-item:hover .report-item-icon{color:var(--gold)}
+.report-item:hover .report-item-title{color:var(--gold-light)}
+.report-item-icon{font-size:1.3rem;min-width:32px;color:var(--muted);margin-top:2px;transition:color .3s}
+.report-item-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;margin-bottom:4px;transition:color .3s}
+.report-item-desc{font-size:.83rem;color:var(--muted);line-height:1.6}
+.report-mockup{background:var(--ink-soft);border:1px solid var(--border);padding:36px;position:relative;overflow:hidden}
+.report-mockup::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--gold),var(--gold-light),var(--gold))}
+.rm-header{display:flex;align-items:center;gap:16px;margin-bottom:28px}
+.rm-type-badge{background:linear-gradient(135deg,#3B2F6E,#1E3A5F);color:white;padding:12px 18px;font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:600;letter-spacing:.05em}
+.rm-type-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600}
+.rm-type-tagline{font-size:.78rem;color:var(--gold);letter-spacing:.1em;margin-top:2px}
+.rm-bar-group{margin-bottom:20px}
+.rm-bar-label{display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:.1em;color:var(--muted);margin-bottom:7px}
+.rm-bar-track{height:4px;background:var(--ink-mid);border-radius:2px;overflow:hidden}
+.rm-bar-fill{height:100%;background:linear-gradient(to right,var(--gold),var(--gold-light));border-radius:2px;animation:barFill 2s ease both}
+@keyframes barFill{from{width:0 !important}}
+.rm-careers{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.rm-career-tag{border:1px solid var(--border);padding:5px 12px;font-size:.72rem;letter-spacing:.08em;color:var(--gold-light);background:var(--gold-dim)}
+.rm-share-row{display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border-soft)}
+.rm-share-btn{flex:1;padding:9px;background:transparent;border:1px solid var(--border-soft);color:var(--muted);font-size:.72rem;letter-spacing:.08em;text-align:center;cursor:default}
+.testimonials{padding:110px 6%;background:linear-gradient(to bottom,transparent,rgba(201,168,76,.02),transparent)}
+.testimonials-inner{max-width:1100px;margin:0 auto}
+.testimonials-header{text-align:center;margin-bottom:60px}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.testi-card{background:var(--card-bg);border:1px solid var(--border-soft);padding:36px 30px;position:relative;transition:all .4s ease}
+.testi-card:hover{border-color:var(--border);transform:translateY(-3px)}
+.testi-quote{font-family:'Cormorant Garamond',serif;font-size:3rem;line-height:1;color:var(--gold);opacity:.5;margin-bottom:16px}
+.testi-text{font-size:.95rem;color:rgba(245,240,232,.75);line-height:1.75;font-weight:300;margin-bottom:28px;font-style:italic}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--ink-mid));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--gold)}
+.testi-name{font-size:.85rem;font-weight:500;color:var(--cream)}
+.testi-role{font-size:.72rem;color:var(--muted);letter-spacing:.06em;margin-top:2px}
+.testi-stars{color:var(--gold);font-size:.75rem;letter-spacing:2px;margin-bottom:16px}
+.pricing{padding:110px 6%}
+.pricing-inner{max-width:800px;margin:0 auto;text-align:center}
+.price-card{background:var(--ink-soft);border:1px solid var(--border);padding:60px 50px;position:relative;overflow:hidden;margin-top:50px}
+.price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to right,var(--gold),var(--gold-light),var(--gold))}
+.price-glow{position:absolute;top:-150px;left:50%;transform:translateX(-50%);width:400px;height:300px;background:radial-gradient(ellipse,rgba(201,168,76,.08) 0%,transparent 70%);pointer-events:none}
+.price-label{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.price-amount{font-family:'Cormorant Garamond',serif;font-size:5rem;font-weight:300;line-height:1;color:var(--cream);margin-bottom:8px}
+.price-amount sup{font-size:2rem;vertical-align:top;margin-top:14px;display:inline-block;color:var(--gold)}
+.price-currency{font-size:.85rem;color:var(--muted);letter-spacing:.1em;margin-bottom:36px}
+.price-includes{display:grid;grid-template-columns:1fr 1fr;gap:14px;text-align:left;margin-bottom:44px}
+.price-item{display:flex;align-items:center;gap:10px;font-size:.87rem;color:rgba(245,240,232,.75)}
+.price-item::before{content:'✓';color:var(--gold);font-size:.85rem;min-width:18px;font-weight:500}
+.price-note{font-size:.77rem;color:var(--muted);margin-top:24px;letter-spacing:.06em}
+.price-methods{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:20px;flex-wrap:wrap}
+.price-method{border:1px solid var(--border-soft);padding:6px 14px;font-size:.7rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.faq{padding:110px 6%;background:linear-gradient(to bottom,transparent,rgba(201,168,76,.015),transparent)}
+.faq-inner{max-width:760px;margin:0 auto}
+.faq-header{text-align:center;margin-bottom:60px}
+.faq-list{display:flex;flex-direction:column}
+.faq-item{border-bottom:1px solid var(--border-soft);overflow:hidden}
+.faq-item:first-child{border-top:1px solid var(--border-soft)}
+.faq-q{width:100%;background:none;border:none;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:400;text-align:left;padding:22px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:20px;transition:color .3s}
+.faq-q:hover{color:var(--gold-light)}
+.faq-icon{min-width:20px;height:20px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);font-size:.9rem;color:var(--gold);transition:all .3s;flex-shrink:0}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--gold-dim)}
+.faq-a{font-size:.9rem;color:var(--muted);line-height:1.75;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:22px}
+.cta-final{padding:140px 6%;text-align:center;position:relative;overflow:hidden}
+.cta-glow{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,.08) 0%,transparent 60%);pointer-events:none}
+.cta-geo{position:absolute;inset:0;opacity:.03;background-image:repeating-linear-gradient(45deg,var(--gold) 0,var(--gold) 1px,transparent 1px,transparent 50px);pointer-events:none}
+footer{border-top:1px solid var(--border-soft);padding:48px 6%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;text-decoration:none;display:block;margin-bottom:8px}
+.footer-tagline{font-size:.75rem;color:var(--muted);letter-spacing:.1em}
+.footer-links{display:flex;gap:28px;flex-wrap:wrap}
+.footer-link{font-size:.78rem;color:var(--muted);text-decoration:none;letter-spacing:.08em;transition:color .3s}
+.footer-link:hover{color:var(--gold)}
+.footer-copy{font-size:.72rem;color:rgba(107,107,126,.6);letter-spacing:.06em}
+.urdu-strip{text-align:center;padding:20px 6%;background:var(--gold-dim);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.urdu-text{font-family:'Noto Nastaliq Urdu',serif;font-size:1.2rem;color:var(--gold-light);direction:rtl;letter-spacing:.02em;line-height:2}
+.urdu-sub{font-size:.75rem;color:var(--muted);letter-spacing:.12em;margin-top:4px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:900px){.discover-inner,.report-inner{grid-template-columns:1fr;gap:48px}.steps,.testi-grid{grid-template-columns:1fr}.price-includes{grid-template-columns:1fr}.btn-nav{display:none}.hero h1{font-size:clamp(2.6rem,10vw,4rem)}}
+@media(max-width:600px){.discover-grid{grid-template-columns:1fr}.hero-stat-row{gap:20px}.price-card{padding:40px 28px}.report-mockup{padding:24px}}
+</style>
+</head>
+<body>
+<div class="geo-bg">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="geo" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+        <polygon points="60,10 110,35 110,85 60,110 10,85 10,35" fill="none" stroke="#C9A84C" stroke-width="0.5"/>
+        <polygon points="60,30 90,45 90,75 60,90 30,75 30,45" fill="none" stroke="#C9A84C" stroke-width="0.3"/>
+        <circle cx="60" cy="60" r="8" fill="none" stroke="#C9A84C" stroke-width="0.3"/>
+        <line x1="60" y1="10" x2="60" y2="30" stroke="#C9A84C" stroke-width="0.3"/>
+        <line x1="110" y1="35" x2="90" y2="45" stroke="#C9A84C" stroke-width="0.3"/>
+        <line x1="110" y1="85" x2="90" y2="75" stroke="#C9A84C" stroke-width="0.3"/>
+        <line x1="60" y1="110" x2="60" y2="90" stroke="#C9A84C" stroke-width="0.3"/>
+        <line x1="10" y1="85" x2="30" y2="75" stroke="#C9A84C" stroke-width="0.3"/>
+        <line x1="10" y1="35" x2="30" y2="45" stroke="#C9A84C" stroke-width="0.3"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#geo)"/>
+  </svg>
+</div>
+
+<nav id="nav">
+  <a href="#" class="nav-logo">Mizaj<span></span></a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <span>EN</span> / <span style="font-family:'Noto Nastaliq Urdu',serif;font-size:1rem;">اردو</span>
+    </div>
+    <a href="mizaj-auth.html" class="btn-nav">Log In</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-badge">Pakistan's First Bilingual Personality Platform</div>
+  <h1>You Are More Than<br><em>You Think You Are</em></h1>
+  <p class="hero-sub">Mizaj uncovers your personality type, reveals your natural strengths, and maps out the career paths where <em>you</em> will genuinely thrive — grounded in Pakistan's job market.</p>
+  <div class="hero-actions">
+    <a href="mizaj-auth.html" class="btn-primary">Discover Your Type →</a>
+    <a href="#how" class="btn-ghost">See how it works <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+  <div class="hero-stat-row">
+    <div class="hero-stat"><div class="hero-stat-num">16</div><div class="hero-stat-label">Personality Types</div></div>
+    <div class="stat-divider"></div>
+    <div class="hero-stat"><div class="hero-stat-num">60</div><div class="hero-stat-label">Crafted Questions</div></div>
+    <div class="stat-divider"></div>
+    <div class="hero-stat"><div class="hero-stat-num">2</div><div class="hero-stat-label">Languages EN / UR</div></div>
+    <div class="stat-divider"></div>
+    <div class="hero-stat"><div class="hero-stat-num">∞</div><div class="hero-stat-label">Lifetime Access</div></div>
+  </div>
+  <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
+</section>
+
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <div class="marquee-item"><span>Personality Report</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Career Guidance</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Strength Analysis</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Relationship Style</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Money Habits</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Growth Roadmap</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Pakistan Job Market</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Shareable Results</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Bilingual EN / UR</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>PDF Export</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Personality Report</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Career Guidance</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Strength Analysis</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Relationship Style</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Money Habits</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Growth Roadmap</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Pakistan Job Market</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Shareable Results</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>Bilingual EN / UR</span><span class="dot">◆</span></div>
+    <div class="marquee-item"><span>PDF Export</span><span class="dot">◆</span></div>
+  </div>
+</div>
+
+<div class="urdu-strip reveal">
+  <div class="urdu-text">مزاج — اپنی اصل شخصیت دریافت کریں</div>
+  <div class="urdu-sub">Available in Urdu · اردو میں دستیاب</div>
+</div>
+
+<section class="discover">
+  <div class="discover-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">What You Get</div>
+      <h2 class="section-title">Every Answer<br>You've Been<br><em>Looking For</em></h2>
+      <p class="section-body">Mizaj doesn't hand you a label. It gives you a complete picture — who you are, how you think, where you belong, and how to get there. Built specifically for Pakistani professionals and students.</p>
+    </div>
+    <div class="discover-grid reveal">
+      <div class="discover-card"><span class="discover-card-icon">🧠</span><h3>Your Personality Type</h3><p>One of 16 distinct MBTI profiles with a 300-400 word deep-dive into how your mind actually works.</p></div>
+      <div class="discover-card"><span class="discover-card-icon">💼</span><h3>Career Paths</h3><p>6-8 careers you're naturally wired for — with salary ranges in PKR and real Pakistan job market context.</p></div>
+      <div class="discover-card"><span class="discover-card-icon">⚡</span><h3>Strengths & Blind Spots</h3><p>Your 6 core strengths and 4 growth areas — so you can stop fighting your own nature.</p></div>
+      <div class="discover-card"><span class="discover-card-icon">💰</span><h3>Money & Relationships</h3><p>How your type handles finances, relationships, and the workplace — the stuff that shapes your life.</p></div>
+      <div class="discover-card"><span class="discover-card-icon">🗺️</span><h3>Growth Roadmap</h3><p>5 actionable steps your specific personality type needs to take to level up — no generic advice.</p></div>
+      <div class="discover-card"><span class="discover-card-icon">🌟</span><h3>Famous Examples</h3><p>Discover which world-famous leaders, artists, and thinkers share your exact personality type.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="how-inner">
+    <div class="how-header reveal">
+      <div class="section-eyebrow">The Process</div>
+      <h2 class="section-title">Three Steps to<br><em>Complete Clarity</em></h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">01</div>
+        <h3>Answer 60 Questions</h3>
+        <p>Carefully crafted, forced-choice questions with no right or wrong answers. Takes 12–15 minutes. Available in English and Urdu. Your progress is auto-saved — pick up anytime.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.1s">
+        <div class="step-num">02</div>
+        <h3>Get Your Type Instantly</h3>
+        <p>The moment you submit, our scoring engine calculates your 4-letter MBTI type across all four dimensions. No waiting. No email. Your result appears immediately on screen.</p>
+      </div>
+      <div class="step reveal" style="transition-delay:.2s">
+        <div class="step-num">03</div>
+        <h3>Unlock Your Full Report</h3>
+        <p>Access your complete personality and career report. Download it as a PDF. Share it on WhatsApp. Bookmark your results — they're yours permanently, forever.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="preview">
+  <div class="preview-inner">
+    <div class="preview-header reveal">
+      <div class="section-eyebrow">16 Personality Types</div>
+      <h2 class="section-title">Which One<br><em>Are You?</em></h2>
+      <p class="section-body" style="margin:0 auto;text-align:center">Every type gets its own beautifully detailed report. Take the test to find out yours.</p>
+    </div>
+  </div>
+  <div class="cards-strip">
+    <div class="cards-row-1">
+      <div class="p-card" style="background:linear-gradient(135deg,#1a1a3e,#2d2d5a)"><div class="p-card-type">INTJ</div><div class="p-card-tag" style="color:#8b9cf4">The Architect</div><div class="p-card-traits"><div class="p-card-trait" style="color:#ccd">Strategic Thinker</div><div class="p-card-trait" style="color:#ccd">Independent</div><div class="p-card-trait" style="color:#ccd">Systems-Oriented</div></div><div class="p-card-glow" style="background:radial-gradient(circle,rgba(139,156,244,.4),transparent)"></div></div>
+      <div class="p-card" style="background:linear-gradient(135deg,#1e3a2f,#2a5040)"><div class="p-card-type">ENFP</div><div class="p-card-tag" style="color:#6fcf97">The Campaigner</div><div class="p-card-traits"><div class="p-card-trait" style="color:#cdc">Energetic</div><div class="p-card-trait" style="color:#cdc">Creative</div><div class="p-card-trait" style="color:#cdc">People-First</div></div><div class="p-card-glow" style="background:radial-gradient(circle,rgba(111,207,151,.4),transparent)"></div></div>
+      <div class="p-card" style="background:linear-gradient(135deg,#3a1e1e,#5a2a2a)"><div class="p-card-type">ESTJ</div><div class="p-card-tag" style="color:#eb8c8c">The Executive</div><div class="p-card-traits"><div class="p-card-trait" style="color:#dcc">Natural Leader</div><div class="p-card-trait" style="color:#dcc">Organized</div><div class="p-card-trait" style="color:#dcc">Results-Driven</div></div><div class="p-card-glow" style="background:radial-gradient(circle,rgba(235,140,140,.4),transparent)"></div></div>
+      <div class="p-card" style="background:linear-gradient(135deg,#2a1e3a,#3d2a5a)"><div class="p-card-type">INFJ</div><div class="p-card-tag" style="color:#bb86fc">The Advocate</div><div class="p-card-traits"><div class="p-card-trait" style="color:#ccd">Deep Thinker</div><div class="p-card-trait" style="color:#ccd">Empathetic</div><div class="p-card-trait" style="color:#ccd">Purpose-Driven</div></div><div class="p-card-glow" style="background:radial-gradient(circle,rgba(187,134,252,.4),transparent)"></div></div>
+      <div class="p-card p-card-blur" style="background:linear-gradient(135deg,#1e2f3a,#2a405a)"><div class="p-card-type">ISTP</div><div class="p-card-tag" style="color:#56ccf2">The Virtuoso</div><div class="p-card-traits"><div class="p-card-trait" style="color:#cdd">Problem Solver</div><div class="p-card-trait" style="color:#cdd">Hands-On</div><div class="p-card-trait" style="color:#cdd">Analytical</div></div></div>
+      <div class="p-card p-card-blur" style="background:linear-gradient(135deg,#2e1e3a,#4a2a5a)"><div class="p-card-type">ENTP</div><div class="p-card-tag" style="color:#f2994a">The Debater</div><div class="p-card-traits"><div class="p-card-trait" style="color:#dcd">Innovative</div><div class="p-card-trait" style="color:#dcd">Curious</div><div class="p-card-trait" style="color:#dcd">Quick-Witted</div></div></div>
+      <div class="p-card p-card-blur" style="background:linear-gradient(135deg,#2f2e1a,#4a4a20)"><div class="p-card-type">ISFP</div><div class="p-card-tag" style="color:#f2c94c">The Adventurer</div><div class="p-card-traits"><div class="p-card-trait" style="color:#ddc">Artistic</div><div class="p-card-trait" style="color:#ddc">Sensitive</div><div class="p-card-trait" style="color:#ddc">Free-Spirited</div></div></div>
+      <div class="p-card p-card-blur" style="background:linear-gradient(135deg,#1a2e2a,#204a44)"><div class="p-card-type">ENTJ</div><div class="p-card-tag" style="color:#6fcf97">The Commander</div><div class="p-card-traits"><div class="p-card-trait" style="color:#cdc">Bold</div><div class="p-card-trait" style="color:#cdc">Ambitious</div><div class="p-card-trait" style="color:#cdc">Strategic</div></div></div>
+      <!-- duplicate for seamless loop -->
+      <div class="p-card" style="background:linear-gradient(135deg,#1a1a3e,#2d2d5a)"><div class="p-card-type">INTJ</div><div class="p-card-tag" style="color:#8b9cf4">The Architect</div><div class="p-card-traits"><div class="p-card-trait" style="color:#ccd">Strategic Thinker</div><div class="p-card-trait" style="color:#ccd">Independent</div><div class="p-card-trait" style="color:#ccd">Systems-Oriented</div></div></div>
+      <div class="p-card" style="background:linear-gradient(135deg,#1e3a2f,#2a5040)"><div class="p-card-type">ENFP</div><div class="p-card-tag" style="color:#6fcf97">The Campaigner</div><div class="p-card-traits"><div class="p-card-trait" style="color:#cdc">Energetic</div><div class="p-card-trait" style="color:#cdc">Creative</div><div class="p-card-trait" style="color:#cdc">People-First</div></div></div>
+      <div class="p-card" style="background:linear-gradient(135deg,#3a1e1e,#5a2a2a)"><div class="p-card-type">ESTJ</div><div class="p-card-tag" style="color:#eb8c8c">The Executive</div><div class="p-card-traits"><div class="p-card-trait" style="color:#dcc">Natural Leader</div><div class="p-card-trait" style="color:#dcc">Organized</div><div class="p-card-trait" style="color:#dcc">Results-Driven</div></div></div>
+      <div class="p-card" style="background:linear-gradient(135deg,#2a1e3a,#3d2a5a)"><div class="p-card-type">INFJ</div><div class="p-card-tag" style="color:#bb86fc">The Advocate</div><div class="p-card-traits"><div class="p-card-trait" style="color:#ccd">Deep Thinker</div><div class="p-card-trait" style="color:#ccd">Empathetic</div><div class="p-card-trait" style="color:#ccd">Purpose-Driven</div></div></div>
+      <div class="p-card p-card-blur" style="background:linear-gradient(135deg,#1e2f3a,#2a405a)"><div class="p-card-type">ISTP</div><div class="p-card-tag" style="color:#56ccf2">The Virtuoso</div><div class="p-card-traits"><div class="p-card-trait" style="color:#cdd">Problem Solver</div><div class="p-card-trait" style="color:#cdd">Hands-On</div><div class="p-card-trait" style="color:#cdd">Analytical</div></div></div>
+      <div class="p-card p-card-blur" style="background:linear-gradient(135deg,#2e1e3a,#4a2a5a)"><div class="p-card-type">ENTP</div><div class="p-card-tag" style="color:#f2994a">The Debater</div><div class="p-card-traits"><div class="p-card-trait" style="color:#dcd">Innovative</div><div class="p-card-trait" style="color:#dcd">Curious</div><div class="p-card-trait" style="color:#dcd">Quick-Witted</div></div></div>
+      <div class="p-card p-card-blur" style="background:linear-gradient(135deg,#2f2e1a,#4a4a20)"><div class="p-card-type">ISFP</div><div class="p-card-tag" style="color:#f2c94c">The Adventurer</div><div class="p-card-traits"><div class="p-card-trait" style="color:#ddc">Artistic</div><div class="p-card-trait" style="color:#ddc">Sensitive</div><div class="p-card-trait" style="color:#ddc">Free-Spirited</div></div></div>
+      <div class="p-card p-card-blur" style="background:linear-gradient(135deg,#1a2e2a,#204a44)"><div class="p-card-type">ENTJ</div><div class="p-card-tag" style="color:#6fcf97">The Commander</div><div class="p-card-traits"><div class="p-card-trait" style="color:#cdc">Bold</div><div class="p-card-trait" style="color:#cdc">Ambitious</div><div class="p-card-trait" style="color:#cdc">Strategic</div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="report">
+  <div class="report-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">The Report</div>
+      <h2 class="section-title">This Is Not<br>A Quiz.<br><em>This Is A Mirror.</em></h2>
+      <p class="section-body" style="margin-bottom:36px">Unlike free online tests that give you a four-letter label and call it a day, Mizaj delivers a full, layered report that actually tells you something useful.</p>
+      <div class="report-list">
+        <div class="report-item"><div class="report-item-icon">📖</div><div><div class="report-item-title">Deep Personality Summary</div><div class="report-item-desc">300-400 words on how your specific type thinks, feels, and moves through the world.</div></div></div>
+        <div class="report-item"><div class="report-item-icon">💼</div><div><div class="report-item-title">Pakistan-Specific Career Paths</div><div class="report-item-desc">Real careers with actual PKR salary ranges — not just generic global suggestions.</div></div></div>
+        <div class="report-item"><div class="report-item-icon">⚡</div><div><div class="report-item-title">Strengths + Growth Areas</div><div class="report-item-desc">Your natural superpowers — and the honest blind spots holding you back.</div></div></div>
+        <div class="report-item"><div class="report-item-icon">❤️</div><div><div class="report-item-title">Relationships & Communication Style</div><div class="report-item-desc">How your type shows up in friendships, romance, and the workplace.</div></div></div>
+        <div class="report-item"><div class="report-item-icon">🗺️</div><div><div class="report-item-title">Actionable Growth Roadmap</div><div class="report-item-desc">5 concrete steps your personality type should take to grow right now.</div></div></div>
+      </div>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="report-mockup">
+        <div class="rm-header">
+          <div class="rm-type-badge">INTJ</div>
+          <div>
+            <div class="rm-type-name">The Architect</div>
+            <div class="rm-type-tagline">Strategic · Independent · Visionary</div>
+          </div>
+        </div>
+        <div class="rm-bar-group"><div class="rm-bar-label"><span>Introverted</span><span>73%</span></div><div class="rm-bar-track"><div class="rm-bar-fill" style="width:73%"></div></div></div>
+        <div class="rm-bar-group"><div class="rm-bar-label"><span>Intuitive</span><span>87%</span></div><div class="rm-bar-track"><div class="rm-bar-fill" style="width:87%"></div></div></div>
+        <div class="rm-bar-group"><div class="rm-bar-label"><span>Thinking</span><span>67%</span></div><div class="rm-bar-track"><div class="rm-bar-fill" style="width:67%"></div></div></div>
+        <div class="rm-bar-group"><div class="rm-bar-label"><span>Judging</span><span>78%</span></div><div class="rm-bar-track"><div class="rm-bar-fill" style="width:78%"></div></div></div>
+        <div style="font-size:.7rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:20px;margin-bottom:8px">Top Career Matches (Pakistan)</div>
+        <div class="rm-careers">
+          <div class="rm-career-tag">Software Engineer</div>
+          <div class="rm-career-tag">Data Analyst</div>
+          <div class="rm-career-tag">Entrepreneur</div>
+          <div class="rm-career-tag">Consultant</div>
+          <div class="rm-career-tag">Researcher</div>
+        </div>
+        <div class="rm-share-row">
+          <div class="rm-share-btn">📤 Share</div>
+          <div class="rm-share-btn">💬 WhatsApp</div>
+          <div class="rm-share-btn">📄 PDF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <div class="testimonials-header reveal">
+      <div class="section-eyebrow">What People Say</div>
+      <h2 class="section-title">Real People,<br><em>Real Clarity</em></h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">I've taken personality tests before but this was the first one that made me feel truly understood. The career section — seeing real PKR salaries for jobs I'm actually suited for was a game changer.</p>
+        <div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Aiza Raza</div><div class="testi-role">University Student, Lahore</div></div></div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.1s">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">The Urdu option was what sold me. I shared my results with my parents who don't read English and they finally understood why I've always been the way I am. That conversation alone was worth it.</p>
+        <div class="testi-author"><div class="testi-avatar">U</div><div><div class="testi-name">Usman Tariq</div><div class="testi-role">Marketing Professional, Karachi</div></div></div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.2s">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"</div>
+        <p class="testi-text">I was stuck between three career paths and going in circles. Mizaj didn't just tell me what I might like — it explained WHY certain roles suit my personality. I made my decision within a week.</p>
+        <div class="testi-author"><div class="testi-avatar">S</div><div><div class="testi-name">Sana Mirza</div><div class="testi-role">Fresh Graduate, Islamabad</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">Simple Pricing</div>
+      <h2 class="section-title">One Payment.<br><em>Permanent Access.</em></h2>
+      <p class="section-body" style="margin:0 auto;text-align:center">No subscriptions. No monthly fees. Pay once and your results are yours forever — come back anytime.</p>
+    </div>
+    <div class="price-card reveal">
+      <div class="price-glow"></div>
+      <div class="price-label">Complete Personality Report</div>
+      <div class="price-amount"><sup>PKR</sup>2,500</div>
+      <div class="price-currency">One-time payment · Lifetime access · No subscription</div>
+      <div class="price-includes">
+        <div class="price-item">Full 60-question MBTI test</div>
+        <div class="price-item">Complete personality report</div>
+        <div class="price-item">Pakistan-specific career paths</div>
+        <div class="price-item">Salary ranges in PKR</div>
+        <div class="price-item">Strengths & growth areas</div>
+        <div class="price-item">Relationship & money insights</div>
+        <div class="price-item">Downloadable PDF report</div>
+        <div class="price-item">Shareable results card</div>
+        <div class="price-item">WhatsApp share feature</div>
+        <div class="price-item">English + Urdu toggle</div>
+      </div>
+      <a href="mizaj-auth.html" class="btn-primary" style="display:inline-block;font-size:1rem;padding:18px 52px">Discover Your Type →</a>
+      <div class="price-note">Secure checkout · Results delivered instantly</div>
+      <div class="price-methods">
+        <div class="price-method">💳 Visa / Mastercard</div>
+        <div class="price-method">📱 EasyPaisa</div>
+        <div class="price-method">📱 JazzCash</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="faq-inner">
+    <div class="faq-header reveal">
+      <div class="section-eyebrow">Questions</div>
+      <h2 class="section-title">Frequently<br><em>Asked</em></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What is MBTI and why does it matter?<span class="faq-icon">+</span></button><div class="faq-a">MBTI (Myers-Briggs Type Indicator) is one of the world's most widely used personality frameworks, measuring 4 dimensions of how you think and interact with the world. It's used by Fortune 500 companies for hiring, career coaches worldwide, and millions who want to understand themselves better. Self-knowledge is the foundation of every good decision you'll make.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">How is Mizaj different from free tests online?<span class="faq-icon">+</span></button><div class="faq-a">Free tests give you a type and a generic two-paragraph description. Mizaj delivers a comprehensive report with Pakistan-specific career guidance, real PKR salary data, relationship insights, money habits, and an actionable growth roadmap. It's also available in Urdu — something no other personality platform offers for Pakistani users.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">How long does the test take?<span class="faq-icon">+</span></button><div class="faq-a">The test has 60 questions and takes approximately 12-15 minutes. There are no right or wrong answers — just honest choices between two options. Your progress is automatically saved, so you can pause and come back without losing your place.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I access my results in Urdu?<span class="faq-icon">+</span></button><div class="faq-a">Yes. Every page, every question, and every section of your report is available in both English and Urdu. Switch between languages with a single toggle. The Urdu version uses authentic Nastaliq script designed for comfortable reading on all devices.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">What payment methods are accepted?<span class="faq-icon">+</span></button><div class="faq-a">We accept Visa/Mastercard credit and debit cards via Stripe, EasyPaisa, and JazzCash. All payments are processed securely. For international users, USD payment via card is also available.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Do I get permanent access after paying?<span class="faq-icon">+</span></button><div class="faq-a">Yes — completely permanent. Pay once and your full report is accessible whenever you log in, forever. Download it as a PDF, share it, and revisit it anytime. No subscriptions, no renewals, no hidden fees.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I retake the test if I want to?<span class="faq-icon">+</span></button><div class="faq-a">Yes. Paid users can retake the test after 30 days. Personality can shift as we grow — a retake gives you a fresh, updated perspective on who you are today. No additional charge required.</div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFAQ(this)">Can I share my results?<span class="faq-icon">+</span></button><div class="faq-a">Absolutely. Every result comes with a unique shareable link and a card designed for WhatsApp and social media. Share your type with friends, family, or your team. You can also download a beautifully formatted PDF of your complete report.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="cta-glow"></div>
+  <div class="cta-geo"></div>
+  <div class="section-eyebrow reveal" style="justify-content:center">The Question</div>
+  <h2 class="section-title reveal" style="max-width:700px;margin:0 auto 24px">Who Are You<br><em>Really?</em></h2>
+  <p class="reveal" style="font-size:1.1rem;color:rgba(245,240,232,.6);max-width:480px;margin:0 auto 48px;line-height:1.75;font-weight:300">Twelve minutes from now, you could have the clearest picture of yourself you've ever seen. The careers you're built for. The person you're meant to be.</p>
+  <a href="mizaj-auth.html" class="btn-primary reveal" style="font-size:1rem;padding:18px 52px">Start Your Discovery — PKR 2,500 →</a>
+</section>
+
+<footer>
+  <div>
+    <a href="#" class="footer-logo">Mizaj</a>
+    <div class="footer-tagline">Personality & Career Discovery · Pakistan</div>
+  </div>
+  <div class="footer-links">
+    <a href="#" class="footer-link">Privacy Policy</a>
+    <a href="#" class="footer-link">Terms of Service</a>
+    <a href="#" class="footer-link">Contact</a>
+    <a href="#" class="footer-link">About</a>
+  </div>
+  <div class="footer-copy">© 2026 Mizaj · mizaj.pk</div>
+</footer>
+
+<script>
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>40));
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+function toggleFAQ(btn){const item=btn.closest('.faq-item');const isOpen=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!isOpen)item.classList.add('open')}
+</script>
+</body>
+</html>

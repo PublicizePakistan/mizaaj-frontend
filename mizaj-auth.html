@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mizaj — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0D0D12;--ink-soft:#1A1A24;--ink-mid:#2B2B38;--gold:#C9A84C;--gold-light:#E8CC7A;--gold-dim:rgba(201,168,76,0.15);--cream:#F5F0E8;--muted:#6B6B7E;--card-bg:rgba(255,255,255,0.035);--border:rgba(201,168,76,0.18);--border-soft:rgba(255,255,255,0.07);--error:#E07070}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+.bg-glow{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bg-glow::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.07) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%)}
+.bg-glow::after{content:'';position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(100,80,200,.05) 0%,transparent 70%);bottom:10%;right:5%}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 6%;border-bottom:1px solid var(--border-soft);background:rgba(13,13,18,.88);backdrop-filter:blur(20px)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-decoration:none;text-transform:uppercase}
+.nav-logo span{display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%;margin-left:4px;vertical-align:middle;margin-bottom:4px}
+.lang-toggle{display:flex;align-items:center;gap:8px;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;transition:color .3s;background:none;border:none}
+.lang-toggle:hover{color:var(--gold)}
+.lang-toggle .sep{color:var(--border)}
+.lang-toggle .active{color:var(--gold)}
+
+/* MAIN LAYOUT */
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:120px 24px 60px;position:relative;z-index:1}
+.auth-container{width:100%;max-width:460px;animation:fadeUp .6s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.auth-header{text-align:center;margin-bottom:40px}
+.auth-eyebrow{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:10px}
+.auth-eyebrow::before,.auth-eyebrow::after{content:'';display:block;width:24px;height:1px;background:var(--gold)}
+.auth-header h1{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:300;line-height:1.1;margin-bottom:10px}
+.auth-header h1 em{color:var(--gold);font-style:italic}
+.auth-header p{font-size:.9rem;color:var(--muted);font-weight:300}
+
+/* TABS */
+.auth-tabs{display:flex;border:1px solid var(--border-soft);margin-bottom:32px;position:relative}
+.auth-tab{flex:1;padding:12px;text-align:center;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;border:none;background:none;transition:color .3s;position:relative;z-index:1}
+.auth-tab.active{color:var(--cream)}
+.tab-indicator{position:absolute;bottom:0;left:0;width:50%;height:100%;background:var(--gold-dim);border-bottom:2px solid var(--gold);transition:transform .3s ease;pointer-events:none}
+.tab-indicator.right{transform:translateX(100%)}
+
+/* FORM */
+.auth-form{display:flex;flex-direction:column;gap:20px}
+.auth-panel{display:none}
+.auth-panel.active{display:flex;flex-direction:column;gap:20px;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.field input{background:var(--card-bg);border:1px solid var(--border-soft);color:var(--cream);padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:300;outline:none;transition:border-color .3s,background .3s;-webkit-appearance:none}
+.field input::placeholder{color:rgba(107,107,126,.5)}
+.field input:focus{border-color:var(--gold);background:rgba(201,168,76,.04)}
+.field input.error{border-color:var(--error)}
+.field-hint{font-size:.75rem;color:var(--muted);margin-top:-4px}
+.field-error{font-size:.75rem;color:var(--error);display:none}
+.field input.error + .field-error{display:block}
+
+/* PASSWORD TOGGLE */
+.field-pw{position:relative}
+.field-pw input{padding-right:48px;width:100%}
+.pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:.85rem;padding:4px;transition:color .3s}
+.pw-toggle:hover{color:var(--gold)}
+
+/* FORGOT */
+.forgot-link{text-align:right;font-size:.78rem;color:var(--muted);text-decoration:none;transition:color .3s;margin-top:-10px}
+.forgot-link:hover{color:var(--gold)}
+
+/* SUBMIT BUTTON */
+.btn-submit{background:var(--gold);color:var(--ink);padding:15px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;margin-top:8px}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(201,168,76,.3)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit.loading{pointer-events:none;opacity:.7}
+.btn-submit .spinner{display:none;width:16px;height:16px;border:2px solid rgba(13,13,18,.3);border-top-color:var(--ink);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+.btn-submit.loading .btn-text{display:none}
+.btn-submit.loading .spinner{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* DIVIDER */
+.auth-divider{display:flex;align-items:center;gap:14px;margin:4px 0}
+.auth-divider span{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border-soft)}
+
+/* SWITCH PROMPT */
+.auth-switch{text-align:center;font-size:.83rem;color:var(--muted)}
+.auth-switch a{color:var(--gold);text-decoration:none;transition:opacity .3s;cursor:pointer}
+.auth-switch a:hover{opacity:.8}
+
+/* TERMS */
+.terms-note{font-size:.73rem;color:rgba(107,107,126,.6);text-align:center;line-height:1.6}
+.terms-note a{color:var(--muted);text-decoration:underline;text-decoration-color:transparent;transition:text-decoration-color .3s}
+.terms-note a:hover{text-decoration-color:var(--muted)}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--ink);padding:12px 28px;font-size:.82rem;letter-spacing:.08em;opacity:0;transition:all .4s ease;pointer-events:none;z-index:200;font-weight:500}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* URDU */
+body.urdu{font-family:'Noto Nastaliq Urdu',serif}
+body.urdu .field input,body.urdu .btn-submit{font-family:'Noto Nastaliq Urdu',serif}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .auth-header h1{font-size:2.2rem}
+  main{padding:100px 20px 40px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<nav>
+  <a href="mizaj-landing.html" class="nav-logo">Mizaj<span></span></a>
+  <button class="lang-toggle" onclick="toggleLang()" id="langBtn">
+    <span class="active" id="enLabel">EN</span>
+    <span class="sep">·</span>
+    <span id="urLabel">اردو</span>
+  </button>
+</nav>
+
+<main>
+  <div class="auth-container">
+
+    <div class="auth-header">
+      <div class="auth-eyebrow" data-en="Your Journey Begins" data-ur="آپ کا سفر شروع ہوتا ہے">Your Journey Begins</div>
+      <h1 data-en="<em>Know</em> yourself." data-ur="اپنے آپ کو <em>جانیں۔</em>"><em>Know</em> yourself.</h1>
+      <p data-en="Sign in to access your personality profile." data-ur="اپنی شخصیت کا پروفائل دیکھنے کے لیے سائن ان کریں۔">Sign in to access your personality profile.</p>
+    </div>
+
+    <div class="auth-tabs">
+      <div class="tab-indicator" id="tabIndicator"></div>
+      <button class="auth-tab active" id="loginTab" onclick="switchTab('login')" data-en="Log In" data-ur="لاگ ان">Log In</button>
+      <button class="auth-tab" id="signupTab" onclick="switchTab('signup')" data-en="Create Account" data-ur="اکاؤنٹ بنائیں">Create Account</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div class="auth-panel active" id="loginPanel">
+      <div class="field">
+        <label data-en="Email Address" data-ur="ای میل پتہ">Email Address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label data-en="Password" data-ur="پاس ورڈ">Password</label>
+        <div class="field-pw">
+          <input type="password" id="loginPw" placeholder="••••••••" autocomplete="current-password">
+          <button class="pw-toggle" onclick="togglePw('loginPw', this)" type="button">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <a href="#" class="forgot-link" data-en="Forgot password?" data-ur="پاس ورڈ بھول گئے؟">Forgot password?</a>
+      </div>
+      <button class="btn-submit" onclick="handleLogin()">
+        <span class="btn-text" data-en="Sign In" data-ur="سائن ان">Sign In</span>
+        <div class="spinner"></div>
+      </button>
+      <div class="auth-switch">
+        <span data-en="Don't have an account?" data-ur="اکاؤنٹ نہیں ہے؟">Don't have an account?</span>
+        <a onclick="switchTab('signup')" data-en=" Sign up free" data-ur=" مفت سائن اپ کریں"> Sign up free</a>
+      </div>
+    </div>
+
+    <!-- SIGNUP PANEL -->
+    <div class="auth-panel" id="signupPanel">
+      <div class="field">
+        <label data-en="Full Name" data-ur="پورا نام">Full Name</label>
+        <input type="text" id="signupName" placeholder="Your name" autocomplete="name">
+      </div>
+      <div class="field">
+        <label data-en="Email Address" data-ur="ای میل پتہ">Email Address</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field">
+  <label>Gender</label>
+  <input type="text" id="signupGender" placeholder="Male / Female / Other">
+</div>
+
+<div class="field">
+  <label>Date of Birth</label>
+  <input type="date" id="signupDOB">
+</div>
+
+<div class="field">
+  <label>Time of Birth (if known)</label>
+  <input type="time" id="signupTOB">
+</div>
+
+<div class="field">
+  <label>Place of Birth (City)</label>
+  <input type="text" id="signupPOB" placeholder="Enter city">
+</div>
+
+
+      <div class="field">
+        <label data-en="Password" data-ur="پاس ورڈ">Password</label>
+        <div class="field-pw">
+          <input type="password" id="signupPw" placeholder="Min. 8 characters" autocomplete="new-password">
+          <button class="pw-toggle" onclick="togglePw('signupPw', this)" type="button">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="field-hint" data-en="Use at least 8 characters" data-ur="کم از کم 8 حروف استعمال کریں">Use at least 8 characters</div>
+      </div>
+      <button class="btn-submit" onclick="handleSignup()">
+        <span class="btn-text" data-en="Create Account" data-ur="اکاؤنٹ بنائیں">Create Account</span>
+        <div class="spinner"></div>
+      </button>
+      <div class="terms-note" data-en='By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.' data-ur='اکاؤنٹ بنا کر آپ ہماری <a href="#">شرائط</a> اور <a href="#">پرائیویسی پالیسی</a> سے متفق ہیں۔'>
+        By creating an account, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+      </div>
+      <div class="auth-switch">
+        <span data-en="Already have an account?" data-ur="پہلے سے اکاؤنٹ ہے؟">Already have an account?</span>
+        <a onclick="switchTab('login')" data-en=" Sign in" data-ur=" سائن ان"> Sign in</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentLang = 'en';
+let currentTab = 'login';
+
+
+
+/* ── TAB SWITCHING ── */
+function switchTab(tab) {
+  currentTab = tab;
+  const indicator = document.getElementById('tabIndicator');
+  const loginPanel = document.getElementById('loginPanel');
+  const signupPanel = document.getElementById('signupPanel');
+  const loginTab = document.getElementById('loginTab');
+  const signupTab = document.getElementById('signupTab');
+
+  if (tab === 'login') {
+    indicator.classList.remove('right');
+    loginPanel.classList.add('active');
+    signupPanel.classList.remove('active');
+    loginTab.classList.add('active');
+    signupTab.classList.remove('active');
+  } else {
+    indicator.classList.add('right');
+    signupPanel.classList.add('active');
+    loginPanel.classList.remove('active');
+    signupTab.classList.add('active');
+    loginTab.classList.remove('active');
+  }
+}
+
+/* ── PASSWORD TOGGLE ── */
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  btn.innerHTML = isHidden
+    ? `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+    : `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+}
+
+/* ── TOAST ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ── VALIDATION ── */
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+/* ✅ ADD HERE (exactly below validation) */
+async function checkAccess() {
+  const user_id = localStorage.getItem("user_id");
+
+  const res = await fetch(`https://web-production-1f476a.up.railway.app/check-access/${user_id}`);
+  const data = await res.json();
+
+  if (data.access === "payment") {
+    window.location.href = "mizaj-payment.html";
+  } else {
+    if (data.attempt_id) {
+      localStorage.setItem("attempt_id", data.attempt_id);
+    }
+    window.location.href = "mizaj-test.html";
+  }
+}
+
+/* ── LOGIN ── */
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw = document.getElementById('loginPw').value;
+  const btn = document.querySelector('#loginPanel .btn-submit');
+
+  if (!email || !isValidEmail(email)) {
+    showToast('Please enter a valid email address.'); 
+    return;
+  }
+
+  if (!pw || pw.length < 6) {
+    showToast('Please enter your password.'); 
+    return;
+  }
+
+  btn.classList.add('loading');
+
+  try {
+    const res = await fetch("https://web-production-1f476a.up.railway.app/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email,
+        password: pw
+      })
+    });
+
+    const data = await res.json();
+    btn.classList.remove('loading');
+
+    if (res.ok) {
+      // ✅ store user session
+      localStorage.setItem('user_id', data.user_id);
+
+      showToast('Welcome back! Redirecting...');
+
+      // ✅ FIX: use backend-controlled flow
+      setTimeout(() => { checkAccess(); }, 1000);
+
+    } else {
+      showToast(data.detail || 'Login failed');
+    }
+
+  } catch (err) {
+    btn.classList.remove('loading');
+    showToast('Server error. Please try again.');
+  }
+}
+
+/* ── SIGNUP ── */
+async function handleSignup() {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pw = document.getElementById('signupPw').value;
+
+  const gender = document.getElementById('signupGender').value;
+  const dob = document.getElementById('signupDOB').value;
+  const tob = document.getElementById('signupTOB').value;
+  const pob = document.getElementById('signupPOB').value;
+
+  const btn = document.querySelector('#signupPanel .btn-submit');
+
+  if (!name) { 
+    showToast('Please enter your name.'); 
+    return; 
+  }
+
+  if (!email || !isValidEmail(email)) { 
+    showToast('Please enter a valid email address.'); 
+    return; 
+  }
+
+  if (!pw || pw.length < 8) { 
+    showToast('Password must be at least 8 characters.'); 
+    return; 
+  }
+
+  btn.classList.add('loading');
+
+  try {
+    const res = await fetch("https://web-production-1f476a.up.railway.app/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password: pw,
+        gender,
+        dob,
+        tob,
+        pob
+      })
+    });
+
+    const data = await res.json();
+    btn.classList.remove('loading');
+
+    if (res.ok) {
+      // ✅ store user session
+      localStorage.setItem('user_id', data.user_id);
+      localStorage.setItem('mizaj_user_name', name);
+      localStorage.setItem('mizaj_user_email', email);
+
+      showToast('Account created! Redirecting...');
+
+      // ✅ FIX: use backend-controlled flow
+      setTimeout(() => { checkAccess(); }, 1000);
+
+    } else {
+      showToast(data.detail || 'Signup failed');
+    }
+
+  } catch (err) {
+    btn.classList.remove('loading');
+    showToast('Server error. Please try again.');
+  }
+}
+
+/* ── LANGUAGE TOGGLE ── */
+function toggleLang() {
+  currentLang = currentLang === 'en' ? 'ur' : 'en';
+  applyLang();
+}
+
+function applyLang() {
+  const isUrdu = currentLang === 'ur';
+  document.body.classList.toggle('urdu', isUrdu);
+  document.documentElement.setAttribute('dir', isUrdu ? 'rtl' : 'ltr');
+  document.getElementById('enLabel').classList.toggle('active', !isUrdu);
+  document.getElementById('urLabel').classList.toggle('active', isUrdu);
+
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const val = isUrdu ? el.getAttribute('data-ur') : el.getAttribute('data-en');
+    if (val) el.innerHTML = val;
+  });
+  document.querySelectorAll('input').forEach(el => {
+    if (isUrdu) el.setAttribute('dir', 'rtl');
+    else el.removeAttribute('dir');
+  });
+}
+
+/* Keyboard: Enter to submit */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (currentTab === 'login') handleLogin();
+    else handleSignup();
+  }
+});
+</script>
+</body>
+</html>
