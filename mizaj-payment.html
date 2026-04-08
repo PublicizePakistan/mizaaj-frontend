@@ -261,43 +261,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 let selectedMethod = 'card';
 let currentLang = 'en';
 
-async function makePayment() {
-  const user_id = localStorage.getItem("user_id");
-
-  if (!user_id) {
-    alert("User not logged in");
-    window.location.href = "mizaj-auth.html";
-    return;
-  }
-
-  try {
-    const res = await fetch("https://web-production-1f476a.up.railway.app/payment", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        user_id: parseInt(user_id),
-        amount: 500,
-        payment_method: "jazzcash"
-      })
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      // ✅ mark paid locally (optional)
-      localStorage.setItem("is_paid", "true");
-
-      window.location.href = "mizaj-results.html";
-    } else {
-      alert(data.detail || "Payment failed");
-    }
-
-  } catch (err) {
-    alert("Payment error");
-  }
-}
 
 function selectMethod(method, el) {
   selectedMethod = method;
@@ -389,36 +352,37 @@ async function handlePayment() {
   btn.classList.add('loading');
 
   try {
-    const res = await fetch("https://web-production-1f476a.up.railway.app/payment", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        user_id: parseInt(user_id),
-        amount: 2500,
-        payment_method: selectedMethod
-      })
+    // ✅ STEP 1: Call backend
+    const res = await fetch(`${API_BASE}/create-payment?user_id=${user_id}`, {
+      method: "POST"
     });
 
     const data = await res.json();
     btn.classList.remove('loading');
 
-    if (res.ok) {
-      // ✅ optional local flag
-      localStorage.setItem('mizaj_has_paid', 'true');
+    // ✅ STEP 2: SUBMIT FORM (REQUIRED FOR DIALOG PAY)
+    if (data.payment_url && data.payload) {
 
-      showToast('Payment successful! Redirecting...');
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = data.payment_url;
 
-      // ✅ FIX: DO NOT go to results directly
-      // 👉 let backend decide next step
-      setTimeout(() => {
-        checkAccess();
-      }, 1200);
+      // 🔥 add all payload fields
+      for (const key in data.payload) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = data.payload[key];
+        form.appendChild(input);
+      }
 
-    } else {
-      showToast(data.detail || 'Payment failed');
+      document.body.appendChild(form);
+      form.submit();
+      return;
     }
+
+    // ❌ fallback
+    showToast('Payment initialization failed');
 
   } catch (err) {
     btn.classList.remove('loading');

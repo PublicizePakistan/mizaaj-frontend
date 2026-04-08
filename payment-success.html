@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment Success</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #0D0D12;
+      color: #F5F0E8;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .box {
+      padding: 40px;
+      border: 1px solid rgba(201,168,76,0.3);
+      background: rgba(255,255,255,0.03);
+    }
+    h2 {
+      color: #C9A84C;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Processing Payment...</h2>
+  <p>Please wait, we are verifying your payment.</p>
+</div>
+
+<script>
+const API_BASE = "https://web-production-1f476a.up.railway.app";
+
+// 👉 Get user_id from localStorage
+const user_id = localStorage.getItem("user_id");
+
+// 👉 OPTIONAL: read params from URL (if gateway sends)
+const params = new URLSearchParams(window.location.search);
+const transaction_id = params.get("transaction_id");
+const status = params.get("status");
+
+async function verifyPayment() {
+  if (!user_id) {
+    alert("User not found. Please login again.");
+    window.location.href = "mizaj-auth.html";
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `${API_BASE}/verify-payment?user_id=${user_id}&transaction_id=${transaction_id}&status=${status}`,
+      {
+        method: "POST"
+      }
+    );
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // ✅ SUCCESS → go to test flow
+      window.location.href = "mizaj-test.html";
+    } else {
+      alert(data.detail || "Payment verification failed");
+      window.location.href = "mizaj-payment.html";
+    }
+
+  } catch (err) {
+    alert("Error verifying payment");
+    window.location.href = "mizaj-payment.html";
+  }
+}
+
+// 🔥 Run immediately
+verifyPayment();
+</script>
+
+</body>
+</html>
