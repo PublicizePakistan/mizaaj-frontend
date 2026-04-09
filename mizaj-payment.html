@@ -181,65 +181,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     </div>
     <p class="price-note" data-en="One-time payment · No recurring charges" data-ur="ایک بار کی ادائیگی · کوئی اضافی چارج نہیں">One-time payment · No recurring charges</p>
 
-    <div class="methods-label" data-en="Choose Payment Method" data-ur="ادائیگی کا طریقہ منتخب کریں">Choose Payment Method</div>
-    <div class="methods">
-      <div class="method selected" onclick="selectMethod('card', this)">
-        <div class="method-radio"><div class="method-radio-dot"></div></div>
-        <div class="method-icon">💳</div>
-        <div class="method-info">
-          <h4 data-en="Credit / Debit Card" data-ur="کریڈٹ / ڈیبٹ کارڈ">Credit / Debit Card</h4>
-          <p data-en="Visa, Mastercard, AMEX" data-ur="ویزا، ماسٹر کارڈ، امیکس">Visa, Mastercard, AMEX</p>
-        </div>
-        <div class="method-badge" data-en="Most Popular" data-ur="سب سے مشہور">Most Popular</div>
-      </div>
-      <div class="method" onclick="selectMethod('easypaisa', this)">
-        <div class="method-radio"><div class="method-radio-dot"></div></div>
-        <div class="method-icon">📱</div>
-        <div class="method-info">
-          <h4>EasyPaisa</h4>
-          <p data-en="Mobile wallet · Instant" data-ur="موبائل والٹ · فوری">Mobile wallet · Instant</p>
-        </div>
-      </div>
-      <div class="method" onclick="selectMethod('jazzcash', this)">
-        <div class="method-radio"><div class="method-radio-dot"></div></div>
-        <div class="method-icon">📱</div>
-        <div class="method-info">
-          <h4>JazzCash</h4>
-          <p data-en="Mobile wallet · Instant" data-ur="موبائل والٹ · فوری">Mobile wallet · Instant</p>
-        </div>
-      </div>
-    </div>
+    <!-- ✅ ADD THIS HERE -->
+<div style="margin-bottom:30px; font-size:.9rem; color:var(--muted); line-height:1.6">
+  Secure checkout powered by Dialog Pay.<br>
+  Pay using Card, EasyPaisa, or JazzCash on the next screen.
+</div>
 
-    <!-- CARD FORM -->
-    <div class="card-form show" id="cardForm">
-      <div class="cf-field full">
-        <label data-en="Card Number" data-ur="کارڈ نمبر">Card Number</label>
-        <input type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)">
-      </div>
-      <div class="card-form-grid">
-        <div class="cf-field">
-          <label data-en="Expiry" data-ur="میعاد">Expiry</label>
-          <input type="text" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)">
-        </div>
-        <div class="cf-field">
-          <label>CVV</label>
-          <input type="text" placeholder="123" maxlength="4" inputmode="numeric">
-        </div>
-        <div class="cf-field full">
-          <label data-en="Name on Card" data-ur="کارڈ پر نام">Name on Card</label>
-          <input type="text" placeholder="As printed on card">
-        </div>
-      </div>
-    </div>
-
-    <!-- EASYPAISA / JAZZCASH FORM -->
-    <div class="card-form" id="mobileForm">
-      <div class="cf-field full">
-        <label data-en="Mobile Number" data-ur="موبائل نمبر">Mobile Number</label>
-        <input type="tel" placeholder="03XX XXXXXXX" maxlength="13">
-      </div>
-      <p style="font-size:.8rem;color:var(--muted);margin-top:10px;line-height:1.6" data-en="You will receive a PIN on your mobile to complete the payment." data-ur="ادائیگی مکمل کرنے کے لیے آپ کے موبائل پر PIN آئے گا۔">You will receive a PIN on your mobile to complete the payment.</p>
-    </div>
 
     <button class="btn-pay" id="payBtn" onclick="handlePayment()">
       <span class="lock-icon">🔒</span>
@@ -258,28 +205,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 <div class="toast" id="toast"></div>
 
 <script>
-let selectedMethod = 'card';
 let currentLang = 'en';
 
-
-function selectMethod(method, el) {
-  selectedMethod = method;
-  document.querySelectorAll('.method').forEach(m => m.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('cardForm').classList.toggle('show', method === 'card');
-  document.getElementById('mobileForm').classList.toggle('show', method === 'easypaisa' || method === 'jazzcash');
-}
-
-function formatCard(input) {
-  let v = input.value.replace(/\D/g, '').substring(0, 16);
-  input.value = v.replace(/(.{4})/g, '$1 ').trim();
-}
-
-function formatExpiry(input) {
-  let v = input.value.replace(/\D/g, '').substring(0, 4);
-  if (v.length >= 2) v = v.substring(0, 2) + ' / ' + v.substring(2);
-  input.value = v;
-}
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -352,60 +279,31 @@ async function handlePayment() {
   btn.classList.add('loading');
 
   try {
-    // ✅ STEP 1: Call backend
     const res = await fetch(`${API_BASE}/create-payment?user_id=${user_id}`, {
       method: "POST"
     });
 
     const data = await res.json();
-
-    // 🔥 DEBUG (VERY IMPORTANT)
     console.log("Payment Response:", data);
 
     btn.classList.remove('loading');
 
-    // ❌ Backend error handling
+    // ❌ backend error
     if (!res.ok) {
-      showToast(data.detail || 'Server error while creating payment');
+      showToast(data.detail || 'Payment failed');
       return;
     }
 
-    // ❌ Missing required fields
-    if (!data.payment_url || !data.payload) {
-      console.error("Invalid payment data:", data);
-      showToast('Payment initialization failed (invalid response)');
+    // ✅ CORRECT FOR HOSTED CHECKOUT
+    if (data.checkout_url) {
+      window.location.href = data.checkout_url;
       return;
     }
 
-    // ❌ Empty payload check
-    if (Object.keys(data.payload).length === 0) {
-      console.error("Empty payload:", data.payload);
-      showToast('Payment failed (empty payload)');
-      return;
-    }
-
-    // ✅ STEP 2: Create FORM and submit
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = data.payment_url;
-
-    for (const key in data.payload) {
-      if (data.payload[key] !== null && data.payload[key] !== undefined) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = data.payload[key];
-        form.appendChild(input);
-      }
-    }
-
-    document.body.appendChild(form);
-
-    console.log("Submitting form to gateway...");
-    form.submit();
+    showToast('Payment initialization failed');
 
   } catch (err) {
-    console.error("Payment Error:", err);
+    console.error(err);
     btn.classList.remove('loading');
     showToast('Payment error. Please try again.');
   }
