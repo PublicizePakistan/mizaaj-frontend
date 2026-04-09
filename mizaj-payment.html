@@ -358,33 +358,54 @@ async function handlePayment() {
     });
 
     const data = await res.json();
+
+    // 🔥 DEBUG (VERY IMPORTANT)
+    console.log("Payment Response:", data);
+
     btn.classList.remove('loading');
 
-    // ✅ STEP 2: SUBMIT FORM (REQUIRED FOR DIALOG PAY)
-    if (data.payment_url && data.payload) {
+    // ❌ Backend error handling
+    if (!res.ok) {
+      showToast(data.detail || 'Server error while creating payment');
+      return;
+    }
 
-      const form = document.createElement("form");
-      form.method = "POST";
-      form.action = data.payment_url;
+    // ❌ Missing required fields
+    if (!data.payment_url || !data.payload) {
+      console.error("Invalid payment data:", data);
+      showToast('Payment initialization failed (invalid response)');
+      return;
+    }
 
-      // 🔥 add all payload fields
-      for (const key in data.payload) {
+    // ❌ Empty payload check
+    if (Object.keys(data.payload).length === 0) {
+      console.error("Empty payload:", data.payload);
+      showToast('Payment failed (empty payload)');
+      return;
+    }
+
+    // ✅ STEP 2: Create FORM and submit
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = data.payment_url;
+
+    for (const key in data.payload) {
+      if (data.payload[key] !== null && data.payload[key] !== undefined) {
         const input = document.createElement("input");
         input.type = "hidden";
         input.name = key;
         input.value = data.payload[key];
         form.appendChild(input);
       }
-
-      document.body.appendChild(form);
-      form.submit();
-      return;
     }
 
-    // ❌ fallback
-    showToast('Payment initialization failed');
+    document.body.appendChild(form);
+
+    console.log("Submitting form to gateway...");
+    form.submit();
 
   } catch (err) {
+    console.error("Payment Error:", err);
     btn.classList.remove('loading');
     showToast('Payment error. Please try again.');
   }
