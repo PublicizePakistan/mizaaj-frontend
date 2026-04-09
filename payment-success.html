@@ -32,60 +32,41 @@
 <body>
 
 <div class="box">
-  <h2>Processing Payment...</h2>
-  <p>Please wait, we are verifying your payment.</p>
+  <h2>Verifying your payment...</h2>
+  <p>Please wait... this may take a few seconds</p>
 </div>
 
 <script>
 const API_BASE = "https://web-production-1f476a.up.railway.app";
 
-// ✅ Get user
 const user_id = localStorage.getItem("user_id");
 
-// ✅ Get Dialog Pay params
-const params = new URLSearchParams(window.location.search);
-
-const merchant_id = params.get("merchant_id");
-const database_name = params.get("database_name");
-const order_id = params.get("order_id");
-const hash = params.get("hash");
-
-async function verifyPayment() {
+async function checkPaymentStatus() {
   if (!user_id) {
-    alert("User not found. Please login again.");
     window.location.href = "mizaj-auth.html";
     return;
   }
 
-  if (!merchant_id || !database_name || !order_id || !hash) {
-    alert("Invalid payment response");
-    window.location.href = "mizaj-payment.html";
-    return;
-  }
-
   try {
-    const res = await fetch(
-      `${API_BASE}/verify-payment?merchant_id=${merchant_id}&database_name=${database_name}&order_id=${order_id}&hash=${hash}&user_id=${user_id}`
-    );
-
+    const res = await fetch(`${API_BASE}/check-access/${user_id}`);
     const data = await res.json();
 
-    if (res.ok) {
-      // ✅ go to test
+    if (data.access === "test") {
+      // ✅ payment confirmed by webhook
       window.location.href = "mizaj-test.html";
     } else {
-      alert(data.detail || "Payment verification failed");
-      window.location.href = "mizaj-payment.html";
+      // ⏳ still pending
+      setTimeout(checkPaymentStatus, 2000);
     }
 
   } catch (err) {
-    alert("Error verifying payment");
-    window.location.href = "mizaj-payment.html";
+    console.error(err);
+    setTimeout(checkPaymentStatus, 2000);
   }
 }
 
-// 🔥 run immediately
-verifyPayment();
+// start checking
+checkPaymentStatus();
 </script>
 
 </body>
