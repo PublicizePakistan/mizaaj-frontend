@@ -346,19 +346,45 @@ async function startTest() {
 // ✅ SAVE ANSWER
 async function saveAnswer(question_id, selected_option) {
   const attempt_id = localStorage.getItem("attempt_id");
-  if (!attempt_id) return;
 
-  await fetch("https://web-production-1f476a.up.railway.app/answer", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-  attempt_id: parseInt(attempt_id),
-  question_id,
-  selected_option
-})
-  });
+  if (!attempt_id) {
+    console.error("❌ No attempt_id found");
+    throw new Error("No attempt_id");
+  }
+
+  const payload = {
+    attempt_id: parseInt(attempt_id),
+    question_id: Number(question_id),   // ✅ ensure number
+    selected_option: String(selected_option) // ✅ ensure string
+  };
+
+  console.log("📤 Sending Answer:", payload); // ✅ DEBUG
+
+  try {
+    const res = await fetch("https://web-production-1f476a.up.railway.app/answer", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    // ✅ HANDLE SERVER ERROR WITH MESSAGE
+    if (!res.ok) {
+      const text = await res.text(); // get backend error
+      console.error("❌ API Error:", text);
+      throw new Error("API failed: " + text);
+    }
+
+    const data = await res.json();
+    console.log("✅ Answer saved:", data);
+
+    return data;
+
+  } catch (err) {
+    console.error("❌ Network/API failure:", err);
+    throw err; // rethrow so selectAnswer can stop flow
+  }
 }
 
 
@@ -366,8 +392,15 @@ async function saveAnswer(question_id, selected_option) {
 async function completeTest(result_type) {
   const attempt_id = parseInt(localStorage.getItem("attempt_id"));
 
-  await fetch(`https://web-production-1f476a.up.railway.app/complete-test?attempt_id=${attempt_id}&result_type=${result_type}`, {
-    method: "POST"
+  await fetch(`https://web-production-1f476a.up.railway.app/complete-test`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      attempt_id: attempt_id,
+      result_type: result_type
+    })
   });
 }
 
@@ -451,27 +484,47 @@ function renderDots() {
 }
 
 /* ── SELECT ANSWER ── */
-function selectAnswer(choice) {
+async function selectAnswer(choice) {
   if (isAnswering) return;
   isAnswering = true;
 
+  const question = questions[currentQ];
+
+  // save locally
   answers[currentQ] = choice;
 
-  saveAnswer(currentQ + 1, choice);
-
-
+  // UI selection
   document.getElementById('optA').classList.toggle('selected', choice === 'a');
   document.getElementById('optB').classList.toggle('selected', choice === 'b');
+
   const selected = document.getElementById(choice === 'a' ? 'optA' : 'optB');
   selected.classList.add('correct-glow');
 
-  document.getElementById('progressFill').style.width = ((currentQ + 1) / 60 * 100) + '%';
+  // progress update
+  document.getElementById('progressFill').style.width =
+    ((currentQ + 1) / 60 * 100) + '%';
 
+  try {
+    // ✅ WAIT for API (IMPORTANT)
+    await saveAnswer(question.id, choice);
+
+    console.log("✅ Answer saved:", {
+      question_id: question.id,
+      selected_option: choice
+    });
+
+  } catch (err) {
+    console.error("❌ Failed to save answer:", err);
+    isAnswering = false;
+    return; // stop if API fails
+  }
+
+  // move next AFTER success
   setTimeout(() => {
     selected.classList.remove('correct-glow');
     advanceQuestion();
     isAnswering = false;
-  }, 380);
+  }, 300);
 }
 
 /* ── ADVANCE ── */
