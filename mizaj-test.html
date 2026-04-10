@@ -569,7 +569,7 @@ function goBack() {
 }
 
 /* ── FINISH & SCORE ── */
-function finishTest() {
+async function finishTest() {
   showScreen('calcScreen');
   document.getElementById('qNumDisplay').textContent = '60';
   document.getElementById('progressFill').style.width = '100%';
@@ -577,6 +577,7 @@ function finishTest() {
   // Calculate MBTI
   const opposites = {E:'I',I:'E',S:'N',N:'S',T:'F',F:'T',J:'P',P:'J'};
   const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+
   questions.forEach((q, i) => {
     const ans = answers[i] || 'a';
     if (ans === 'a') scores[q.pole]++;
@@ -589,9 +590,15 @@ function finishTest() {
     (scores.T >= scores.F ? 'T' : 'F') +
     (scores.J >= scores.P ? 'J' : 'P');
 
-    // ✅ SEND RESULT TO BACKEND
-completeTest(mbtiType);
+  try {
+    // ✅ WAIT for backend to save result
+    await completeTest(mbtiType);
+    console.log("✅ Result saved:", mbtiType);
+  } catch (err) {
+    console.error("❌ Failed to save result:", err);
+  }
 
+  // Save locally
   localStorage.setItem('mizaj_mbti', mbtiType);
   localStorage.setItem('mizaj_scores', JSON.stringify(scores));
   localStorage.setItem('mizaj_answers', JSON.stringify(answers));
@@ -605,6 +612,7 @@ completeTest(mbtiType);
     }, i * 700 + 400);
   });
 
+  // Redirect AFTER backend save
   setTimeout(() => {
     window.location.href = 'mizaj-results.html';
   }, 4200);
