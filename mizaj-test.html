@@ -392,7 +392,12 @@ async function saveAnswer(question_id, selected_option) {
 async function completeTest(result_type) {
   const attempt_id = parseInt(localStorage.getItem("attempt_id"));
 
-  await fetch(`https://web-production-1f476a.up.railway.app/complete-test`, {
+  console.log("📤 Sending complete-test:", {
+    attempt_id,
+    result_type
+  });
+
+  const res = await fetch(`https://web-production-1f476a.up.railway.app/complete-test`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -402,6 +407,17 @@ async function completeTest(result_type) {
       result_type: result_type
     })
   });
+
+  if (!res.ok) {
+    const text = await res.text();
+    console.error("❌ complete-test failed:", text);
+    throw new Error("Complete test failed");
+  }
+
+  const data = await res.json();
+  console.log("✅ complete-test success:", data);
+
+  return data;
 }
 
 let currentQ = 0;     // 0-59

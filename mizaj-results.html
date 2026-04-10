@@ -346,17 +346,16 @@ const REPORTS = {
 };
 
 async function loadResult() {
-  const user_id = localStorage.getItem("user_id");
+  const attempt_id = localStorage.getItem("attempt_id");
 
-  if (!user_id) {
-    alert("User not logged in");
-    window.location.href = "mizaj-auth.html";
+  if (!attempt_id) {
+    alert("No test attempt found. Please take the test first.");
+    window.location.href = "mizaj-test.html";
     return;
   }
 
   try {
-    const res = await fetch(`https://web-production-1f476a.up.railway.app/result/${user_id}`);
-    const data = await res.json();
+    const res = await fetch(`https://web-production-1f476a.up.railway.app/result/${attempt_id}`);
 
     if (!res.ok) {
       alert("No result found. Please complete the test first.");
@@ -364,12 +363,17 @@ async function loadResult() {
       return;
     }
 
-    console.log("Result:", data);
+    const data = await res.json();
 
-    // ✅ USE THIS (IMPORTANT)
-    applyResult(data);
+    console.log("✅ Result:", data);
+
+    // 🔥 IMPORTANT (depends on your backend response)
+    const type = data.result_type || data.type;
+
+    applyResult(type);
 
   } catch (err) {
+    console.error("❌ Error loading result:", err);
     alert("Error loading result. Please try again.");
   }
 }
