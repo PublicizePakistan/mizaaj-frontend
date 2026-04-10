@@ -325,6 +325,90 @@ section{position:relative;z-index:1;padding:90px 6%}
 
 <script>
   const API_BASE = "https://web-production-1f476a.up.railway.app";
+
+  async function loadResult() {
+  const user_id = localStorage.getItem("user_id");
+
+  if (!user_id) {
+    console.error("❌ No user_id found");
+
+    // ✅ fallback (optional)
+    const fallback = localStorage.getItem("mizaj_mbti");
+    if (fallback) {
+      applyResult(fallback);
+    }
+
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/result/${user_id}`);
+
+    // ✅ handle server error
+    if (!res.ok) {
+      console.error("❌ Failed to fetch result");
+
+      const fallback = localStorage.getItem("mizaj_mbti");
+      if (fallback) {
+        applyResult(fallback);
+      }
+
+      return;
+    }
+
+    const data = await res.json();
+
+    console.log("✅ Result:", data);
+
+    // ✅ SAFE RESULT HANDLING
+    const type = data.result_type || localStorage.getItem("mizaj_mbti");
+
+    if (!type) {
+      console.error("❌ No result_type found");
+      return;
+    }
+
+    applyResult(type);
+
+  } catch (err) {
+    console.error("❌ Error:", err);
+
+    // ✅ fallback if API fails
+    const fallback = localStorage.getItem("mizaj_mbti");
+    if (fallback) {
+      applyResult(fallback);
+    }
+  }
+}
+
+
+function applyResult(type) {
+  const report = REPORTS[type];
+
+  if (!report) {
+    console.error("❌ Unknown type:", type);
+    return;
+  }
+
+  // 🎯 HERO
+  document.getElementById("typeLetters").textContent = report.mbti_type;
+  document.getElementById("typeName").textContent = report.tagline;
+  document.getElementById("heroSummary").textContent = report.hero_quote;
+
+  // 🎯 SHARE CARD
+  document.getElementById("scType").textContent = report.mbti_type;
+  document.getElementById("scName").textContent = report.tagline;
+  document.getElementById("scQuote").textContent = report.share_quote;
+
+  // 🎯 SUMMARY
+  document.getElementById("personalitySummary").innerHTML =
+    report.personality_summary.split("\n\n").map(p => `<p>${p}</p>`).join("");
+
+  // 🎯 COLOR GLOW
+  document.documentElement.style.setProperty("--glow-color", report.color_hex + "33");
+}
+
+
 /* ── ALL 16 PERSONALITY REPORTS ── */
 const REPORTS = {
   INFP: {"mbti_type": "INFP", "tagline": "The Idealist", "color_hex": "#6B5EA8", "hero_quote": "You feel things more deeply than most, and you carry a vision of the world as it should be \u2014 not just as it is.", "share_quote": "Quiet on the outside. A universe within.", "personality_summary": "You are the person who feels things more deeply than anyone around you realises. On the surface, you may seem quiet, even reserved \u2014 but inside, there is a rich, vivid inner world that most people never get to see. You are driven not by money, status, or applause, but by something harder to name: the need for your life to mean something. You need your work, your relationships, and your choices to align with who you truly are. When they don't, no amount of external success can fill the gap.\n\nAs an INFP, you are wired for empathy. You pick up on things others miss \u2014 the tension in a room, the sadness behind someone's smile, the injustice buried in a system that everyone else has accepted as normal. This makes you a natural writer, counsellor, teacher, and changemaker. You do not just observe the world \u2014 you feel its weight and want to make it better.\n\nIn Pakistan's social landscape, being an INFP can sometimes feel like being misunderstood. You are not the loudest voice in the room. You do not always play by unspoken rules. You may have been told to be 'more practical', to stop dreaming, or to just settle. But your idealism is not a weakness \u2014 it is your most powerful asset when it is pointed in the right direction.\n\nYou work best when you have creative freedom, when the work feels meaningful, and when you are not micromanaged or suffocated by rigid systems. You struggle with harsh criticism, conflict, and environments that reward performance over authenticity. You can be slow to start tasks that don't excite you \u2014 but once you care about something, your focus and dedication are extraordinary.\n\nThe INFP's greatest challenge is not a lack of talent \u2014 it is the fear that who you truly are is not enough. It is. Your sensitivity is not something to manage. It is the very thing that makes you capable of work that genuinely changes people.", "career_paths": [{"title": "Content Writer / Copywriter", "description": "INFPs have a natural command of language and a gift for expressing complex emotions and ideas clearly. Content writing \u2014 for brands, media, digital agencies, or independently \u2014 allows creative freedom while building a sustainable income. Pakistan's digital economy is growing rapidly and skilled writers are in high demand.", "salary_pkr_min": 60000, "salary_pkr_max": 250000}, {"title": "Psychologist / Counsellor", "description": "INFPs are deeply empathetic and genuinely interested in understanding human behaviour. A career in clinical or counselling psychology is one of the most natural fits for this type. With Pakistan's growing awareness of mental health, trained counsellors are increasingly needed in schools, hospitals, corporates, and private practice.", "salary_pkr_min": 80000, "salary_pkr_max": 300000}, {"title": "UX / UI Designer", "description": "UX design sits at the intersection of empathy and creativity \u2014 understanding how people think and feel, then designing experiences that serve them. INFPs are naturally user-focused and visually intuitive. This is one of the most in-demand and well-paying skills in Pakistan's tech sector right now.", "salary_pkr_min": 100000, "salary_pkr_max": 400000}, {"title": "Teacher / Educator", "description": "INFPs who find the right subject and the right environment thrive as teachers. They connect with students on a personal level, make abstract ideas feel meaningful, and create safe spaces where people actually want to learn. Private schooling, tutoring, and online teaching platforms offer strong income potential.", "salary_pkr_min": 50000, "salary_pkr_max": 180000}, {"title": "Social Development / NGO Sector", "description": "Many INFPs are drawn to work that directly improves lives. The development sector \u2014 NGOs, UN agencies, social enterprises, and community programmes \u2014 offers meaningful work aligned with INFP values. Pakistan has a substantial and growing development sector with international salary scales.", "salary_pkr_min": 80000, "salary_pkr_max": 350000}, {"title": "Novelist / Creative Writer", "description": "Fiction, poetry, screenwriting, and storytelling are natural INFP territories. While building a writing career takes time, Pakistan's Urdu and English literary scenes are active, and digital platforms now allow writers to earn internationally from day one through freelancing, substack, or publishing.", "salary_pkr_min": 30000, "salary_pkr_max": 500000}, {"title": "Human Resources Specialist", "description": "INFPs in HR focus on the human side of organisations \u2014 culture, wellbeing, conflict resolution, and inclusion. They are excellent at listening, building trust, and advocating for fair treatment. Mid to large companies in Pakistan increasingly invest in people-focused HR roles.", "salary_pkr_min": 70000, "salary_pkr_max": 220000}, {"title": "Graphic Designer / Visual Artist", "description": "INFPs with a visual inclination find great satisfaction in design work \u2014 branding, illustration, social media, and digital art. Freelancing platforms like Fiverr and Upwork allow Pakistani designers to earn in dollars while working on projects they genuinely enjoy.", "salary_pkr_min": 50000, "salary_pkr_max": 350000}], "strengths": ["Deep empathy \u2014 you genuinely understand how others feel and what they need, which makes you exceptional in any role involving people", "Creative thinking \u2014 you naturally approach problems from angles others don't consider, producing original and meaningful work", "Strong written communication \u2014 INFPs express themselves with unusual clarity and emotional depth on the page", "Fierce personal loyalty \u2014 once you commit to a person or cause, you are one of the most dedicated and trustworthy people they will ever have", "Idealism as a driver \u2014 your refusal to accept 'that's just how things are' pushes you to find better ways where others have stopped trying", "Adaptability \u2014 you are not rigid or territorial; you listen, absorb, and adjust without losing your core identity"], "weaknesses": ["Avoidance of conflict \u2014 you find confrontation deeply uncomfortable, which can lead to unresolved tension, suppressed feelings, and decisions made to keep the peace rather than what is right", "Perfectionism and paralysis \u2014 because your work feels personal, the fear of it not being good enough can stop you from starting or finishing at all", "Taking criticism personally \u2014 feedback on your work can feel like feedback on who you are, making it hard to separate the two and grow from it", "Difficulty with structure and routine \u2014 highly repetitive or rigidly structured environments drain you quickly, making traditional 9-to-5 setups a genuine challenge for your wellbeing"], "relationship_style": "In relationships \u2014 friendships, romantic partnerships, and family \u2014 INFPs are thoughtful, deeply loyal, and genuinely invested in the other person's inner world. You do not do surface-level. You want to know what someone actually thinks, fears, hopes for, and believes. Small talk tires you; real conversation energises you.\n\nYou tend to give a great deal of yourself in close relationships, sometimes more than you receive. You feel love through acts of understanding \u2014 when someone truly sees you, not just the version of you they find convenient. When that reciprocity is missing, you withdraw quietly rather than confront.\n\nIn the Pakistani family and social context, INFPs often navigate a tension between their deeply personal values and the expectations placed on them by family, community, or culture. You may have learned to present one version of yourself publicly while guarding your true self carefully. Finding people and spaces where you can be fully authentic is not a luxury for you \u2014 it is essential to your mental health.\n\nYou are a devoted partner and a fiercely present friend to the few you truly let in.", "money_management": "Money is rarely the primary motivator for INFPs \u2014 which can be both a strength and a liability. You are unlikely to chase a career purely for income, which protects you from a hollow professional life but can leave you financially underprepared if you are not intentional.\n\nINFPs tend to spend on experiences, people, and things that carry emotional meaning \u2014 books, travel, gifts for loved ones, causes they believe in. Budgeting can feel restrictive and uninspiring unless it is framed as a tool for freedom rather than control.\n\nThe most important financial move for an INFP is to build a financial floor \u2014 an emergency fund and a basic savings habit \u2014 so that your sensitivity and need for autonomy are protected. Financial pressure is one of the fastest ways to trap an INFP in work that kills their spirit.", "growth_tips": ["Learn to separate your work from your worth \u2014 feedback, rejection, and criticism are data, not verdicts on who you are. Build the habit of asking 'what can I use here?' before you feel it", "Give yourself a starting ritual, not a perfecting ritual \u2014 your biggest enemy is the blank page. Commit to five imperfect minutes every day. Momentum beats motivation", "Have one difficult conversation this month that you have been avoiding \u2014 conflict avoidance quietly destroys the relationships and opportunities you care most about. Your voice in a disagreement is not aggression; it is respect", "Build a financial floor before you follow your passion \u2014 six months of savings gives you the freedom to walk away from what is wrong and move toward what is right, on your own terms", "Find your people deliberately \u2014 INFPs drain in the wrong environments and come alive in the right ones. Invest time in communities, spaces, and relationships that reflect who you actually are, not who you are expected to be"], "famous_examples": [{"name": "J.R.R. Tolkien", "known_for": "Author of The Lord of the Rings \u2014 built entire worlds driven by a deeply personal mythology and moral vision"}, {"name": "Princess Diana", "known_for": "Used her platform to advocate for the marginalised with genuine empathy, at great personal cost"}, {"name": "Audrey Hepburn", "known_for": "Actress and UNICEF ambassador who combined quiet grace with an unwavering commitment to humanitarian work"}, {"name": "Imran Khan", "known_for": "Pakistan's former Prime Minister \u2014 idealism-driven, mission-oriented, and often at odds with institutional systems"}, {"name": "William Shakespeare", "known_for": "Gave the world its most enduring exploration of the human condition through empathy, imagination, and language"}, {"name": "Malala Yousafzai", "known_for": "Pakistani activist whose personal values became a global movement \u2014 the INFP's idealism in its most powerful form"}]},
@@ -630,8 +714,11 @@ function toggleLang() {
 }
 
 init();
-loadResult();
-window.onload = loadResult;
+window.onload = () => {
+  init();        // if needed
+  loadResult();  // ✅ correct trigger
+};
+
 </script>
 </body>
 </html>

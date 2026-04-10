@@ -224,6 +224,7 @@ body.urdu .q-text{font-family:'Noto Nastaliq Urdu',serif;font-size:1.4rem}
 </div>
 
 <script>
+  const API_BASE = "https://web-production-1f476a.up.railway.app";
 /* ══════════════════════════════
    ALL 60 QUESTIONS
 ══════════════════════════════ */
@@ -306,11 +307,11 @@ function getChapterIdx(qIdx) {
   return 4;
 }
 
+
+
 /* ── STATE ── */
 // ✅ START TEST (CREATE ATTEMPT)
 async function startTest() {
-  console.log("🔥 startTest called");
-
   const user_id = localStorage.getItem("user_id");
 
   if (!user_id) {
@@ -318,48 +319,17 @@ async function startTest() {
     return;
   }
 
-  try {
-   const res = await fetch(`https://web-production-1f476a.up.railway.app/start-test?user_id=${user_id}`, {
-      method: "POST"
-    });
-
-    console.log("Status:", res.status);
-
-    const data = await res.json();
-    console.log("Response:", data);
-
-    if (!res.ok) {
-      alert("Failed to start test");
-      return;
-    }
-
-    localStorage.setItem("attempt_id", data.attempt_id);
-
-    console.log("✅ attempt_id saved:", data.attempt_id);
-
-  } catch (err) {
-    console.error("❌ Error:", err);
-  }
-}
-
-
-// ✅ SAVE ANSWER
-async function saveAnswer(question_id, selected_option) {
-  const attempt_id = localStorage.getItem("attempt_id");
-  if (!attempt_id) return;
-
-  await fetch("https://web-production-1f476a.up.railway.app/answer", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-  attempt_id: parseInt(attempt_id),
-  question_id,
-  selected_option
-})
+  const res = await fetch(`${API_BASE}/start-test?user_id=${user_id}`, {
+    method: "POST"
   });
+
+  const data = await res.json();
+
+  localStorage.setItem("attempt_id", data.attempt_id);
+
+  console.log("✅ attempt_id saved:", data.attempt_id);
 }
+
 
 
 // ✅ COMPLETE TEST
@@ -451,28 +421,61 @@ function renderDots() {
 }
 
 /* ── SELECT ANSWER ── */
-function selectAnswer(choice) {
+async function selectAnswer(option) {
+  // ✅ PREVENT DOUBLE CLICK
   if (isAnswering) return;
   isAnswering = true;
 
-  answers[currentQ] = choice;
+  const question = questions[currentQ];
+  const attempt_id = parseInt(localStorage.getItem("attempt_id"));
 
-  saveAnswer(currentQ + 1, choice);
+  if (!attempt_id) {
+    console.error("❌ No attempt_id");
+    return;
+  }
 
+  // save locally
+  answers[currentQ] = option;
 
-  document.getElementById('optA').classList.toggle('selected', choice === 'a');
-  document.getElementById('optB').classList.toggle('selected', choice === 'b');
-  const selected = document.getElementById(choice === 'a' ? 'optA' : 'optB');
-  selected.classList.add('correct-glow');
+  // UI update
+  document.getElementById("optA").classList.remove("selected");
+  document.getElementById("optB").classList.remove("selected");
+  document.getElementById(option === 'a' ? "optA" : "optB").classList.add("selected");
 
-  document.getElementById('progressFill').style.width = ((currentQ + 1) / 60 * 100) + '%';
+  try {
+    const res = await fetch(`${API_BASE}/answer`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    attempt_id,
+    question_id: question.id,
+    selected_option: option
+  })
+});
+
+// ✅ ERROR HANDLING
+if (!res.ok) {
+  console.error("❌ Server error while saving answer");
+  isAnswering = false;   // 🔥 IMPORTANT RESET
+  return;
+}
+
+console.log("✅ Answer saved");
+
+  } catch (err) {
+    console.error("❌ Answer error:", err);
+    isAnswering = false;
+    return;
+  }
 
   setTimeout(() => {
-    selected.classList.remove('correct-glow');
-    advanceQuestion();
-    isAnswering = false;
-  }, 380);
+  isAnswering = false;   // ✅ reset
+  advanceQuestion();
+}, 250);
 }
+
 
 /* ── ADVANCE ── */
 function advanceQuestion() {
