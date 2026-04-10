@@ -514,10 +514,10 @@ async function selectAnswer(choice) {
     });
 
   } catch (err) {
-    console.error("❌ Failed to save answer:", err);
-    isAnswering = false;
-    return; // stop if API fails
-  }
+  console.error("❌ Failed to save answer:", err);
+
+  // ✅ DO NOT BLOCK USER FLOW
+}
 
   // move next AFTER success
   setTimeout(() => {
