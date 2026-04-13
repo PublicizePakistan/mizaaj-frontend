@@ -406,7 +406,9 @@ function showScreen(id) {
 
 /* ── BEGIN CHAPTER ── */
 async function beginChapter(num) {
-  await startTest(); // 🔥 THIS IS THE MISSING PIECE
+  console.log("🔥 beginChapter triggered"); // ADD THIS
+
+  await startTest();
 
   showScreen('questionScreen');
 
@@ -625,6 +627,8 @@ document.addEventListener('keydown', e => {
   if (e.key === 'b' || e.key === 'B' || e.key === '2') selectAnswer('b');
   if (e.key === 'ArrowLeft' || e.key === 'Backspace') goBack();
 });
+
+window.beginChapter = beginChapter;
 </script>
 </body>
 </html>
