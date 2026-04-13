@@ -224,6 +224,7 @@ body.urdu .q-text{font-family:'Noto Nastaliq Urdu',serif;font-size:1.4rem}
 </div>
 
 <script>
+  console.log("🔥 SCRIPT LOADED");
 /* ══════════════════════════════
    ALL 60 QUESTIONS
 ══════════════════════════════ */
@@ -309,6 +310,7 @@ function getChapterIdx(qIdx) {
 /* ── STATE ── */
 // ✅ START TEST (CREATE ATTEMPT)
 async function startTest() {
+  console.log("🚀 startTest EXECUTING");
   const user_id = localStorage.getItem("user_id");
 
   if (!user_id) {
@@ -629,6 +631,16 @@ document.addEventListener('keydown', e => {
 });
 
 window.beginChapter = beginChapter;
+window.addEventListener("load", async () => {
+  console.log("🔥 PAGE LOADED");
+
+  try {
+    await startTest();
+    console.log("✅ start-test called on load");
+  } catch (e) {
+    console.error("❌ start-test failed:", e);
+  }
+});
 </script>
 </body>
 </html>
