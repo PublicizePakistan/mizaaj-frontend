@@ -309,115 +309,83 @@ function getChapterIdx(qIdx) {
 /* ── STATE ── */
 // ✅ START TEST (CREATE ATTEMPT)
 async function startTest() {
-  console.log("🔥 startTest called");
-
   const user_id = localStorage.getItem("user_id");
 
   if (!user_id) {
     alert("User not logged in");
-    return;
+    throw new Error("No user");
   }
 
-  try {
-   const res = await fetch(`https://web-production-1f476a.up.railway.app/start-test?user_id=${user_id}`, {
-      method: "POST"
-    });
+  let attempt_id = localStorage.getItem("attempt_id");
+  if (attempt_id) return attempt_id;
 
-    console.log("Status:", res.status);
+  const res = await fetch(`${API_BASE}/start-test?user_id=${user_id}`, {
+    method: "POST"
+  });
 
-    const data = await res.json();
-    console.log("Response:", data);
+  if (!res.ok) throw new Error("Failed to start test");
 
-    if (!res.ok) {
-      alert("Failed to start test");
-      return;
-    }
+  const data = await res.json();
 
-    localStorage.setItem("attempt_id", data.attempt_id);
+  localStorage.setItem("attempt_id", data.attempt_id);
 
-    console.log("✅ attempt_id saved:", data.attempt_id);
-
-  } catch (err) {
-    console.error("❌ Error:", err);
-  }
+  return data.attempt_id;
 }
 
 
 // ✅ SAVE ANSWER
 async function saveAnswer(question_id, selected_option) {
-  const attempt_id = localStorage.getItem("attempt_id");
+  let attempt_id = localStorage.getItem("attempt_id");
 
   if (!attempt_id) {
-    console.error("❌ No attempt_id found");
-    throw new Error("No attempt_id");
+    attempt_id = await startTest();
   }
 
-  const payload = {
-    attempt_id: parseInt(attempt_id),
-    question_id: Number(question_id),   // ✅ ensure number
-    selected_option: String(selected_option) // ✅ ensure string
-  };
-
-  console.log("📤 Sending Answer:", payload); // ✅ DEBUG
-
-  try {
-    const res = await fetch("https://web-production-1f476a.up.railway.app/answer", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    // ✅ HANDLE SERVER ERROR WITH MESSAGE
-    if (!res.ok) {
-      const text = await res.text(); // get backend error
-      console.error("❌ API Error:", text);
-      throw new Error("API failed: " + text);
-    }
-
-    const data = await res.json();
-    console.log("✅ Answer saved:", data);
-
-    return data;
-
-  } catch (err) {
-    console.error("❌ Network/API failure:", err);
-    throw err; // rethrow so selectAnswer can stop flow
-  }
-}
-
-
-// ✅ COMPLETE TEST
-async function completeTest(result_type) {
-  const attempt_id = parseInt(localStorage.getItem("attempt_id"));
-
-  console.log("📤 Sending complete-test:", {
-    attempt_id,
-    result_type
-  });
-
-  const res = await fetch(`https://web-production-1f476a.up.railway.app/complete-test`, {
+  const res = await fetch(`${API_BASE}/answer`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      attempt_id: attempt_id,
-      result_type: result_type
+      attempt_id: Number(attempt_id),
+      question_id: Number(question_id),
+      selected_option: String(selected_option)
     })
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    console.error("❌ complete-test failed:", text);
-    throw new Error("Complete test failed");
+    const err = await res.text();
+    console.error("❌ Answer error:", err);
+
+    if (err.includes("Invalid attempt_id")) {
+      localStorage.removeItem("attempt_id");
+      await startTest();
+      return saveAnswer(question_id, selected_option);
+    }
+
+    throw new Error(err);
   }
 
-  const data = await res.json();
-  console.log("✅ complete-test success:", data);
+  return res.json();
+}
 
-  return data;
+
+// ✅ COMPLETE TEST
+async function completeTest(result_type) {
+  const attempt_id = localStorage.getItem("attempt_id");
+
+  const res = await fetch(
+    `${API_BASE}/complete-test?attempt_id=${attempt_id}&result_type=${result_type}`,
+    { method: "POST" }
+  );
+
+  if (!res.ok) {
+    const err = await res.text();
+    console.error("❌ complete-test error:", err);
+    throw new Error(err);
+  }
+
+  return res.json();
 }
 
 let currentQ = 0;     // 0-59
@@ -438,9 +406,7 @@ function showScreen(id) {
 
 /* ── BEGIN CHAPTER ── */
 async function beginChapter(num) {
-if (!localStorage.getItem("attempt_id")) {
-  await startTest();
-}
+  await startTest(); // 🔥 THIS IS THE MISSING PIECE
 
   showScreen('questionScreen');
 
