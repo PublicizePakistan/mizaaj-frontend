@@ -346,40 +346,40 @@ const REPORTS = {
 };
 
 async function loadResult() {
-  const attempt_id = localStorage.getItem("attempt_id");
+  const user_id = localStorage.getItem("user_id");
+  const localType = localStorage.getItem("mizaj_mbti");
 
-  if (!attempt_id) {
+  if (!user_id && !localType) {
     alert("No test attempt found. Please take the test first.");
     window.location.href = "mizaj-test.html";
     return;
   }
 
   try {
-    const res = await fetch(`https://web-production-1f476a.up.railway.app/result/${attempt_id}`);
+    const res = await fetch(`https://web-production-1f476a.up.railway.app/result/${user_id}`);
 
-    if (!res.ok) {
-      alert("No result found. Please complete the test first.");
-      window.location.href = "mizaj-test.html";
-      return;
-    }
+    if (!res.ok) throw new Error("not found");
 
     const data = await res.json();
-
     console.log("✅ Result:", data);
 
-    // 🔥 IMPORTANT (depends on your backend response)
-    const type = data.result_type || data.type;
-
+    const type = data.type || data.result_type;
     applyResult(type);
 
   } catch (err) {
     console.error("❌ Error loading result:", err);
-    alert("Error loading result. Please try again.");
+    // fallback to localStorage if backend fails
+    if (localType) {
+      console.log("⚠️ Using localStorage fallback:", localType);
+      applyResult(localType);
+    } else {
+      alert("Result not found. Please complete the test first.");
+      window.location.href = "mizaj-test.html";
+    }
   }
 }
 
-function applyResult(data) {
-  const type = data.type;
+function applyResult(type) {
   const report = REPORTS[type];
 
   if (!report) return;
