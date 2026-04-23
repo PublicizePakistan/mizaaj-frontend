@@ -465,18 +465,18 @@ function applyResult(type) {
   // HERO
   document.getElementById("typeLetters").textContent = type;
   document.getElementById("typeName").textContent = report.tagline;
-  document.getElementById("heroSummary").textContent = report.hero_quote;
+  document.getElementById("heroSummary").textContent = cleanDashes(report.hero_quote);
 
   // SHARE CARD
   document.getElementById("scType").textContent = type;
   document.getElementById("scName").textContent = report.tagline;
-  document.getElementById("scQuote").textContent = report.share_quote;
+  document.getElementById("scQuote").textContent = cleanDashes(report.share_quote);
 
   // SUMMARY
   document.getElementById("personalitySummary").innerHTML =
     report.personality_summary
       .split("\n\n")
-      .map(p => `<p>${p}</p>`)
+      .map(p => `<p>${cleanDashes(p)}</p>`)
       .join("");
 }
 
@@ -524,13 +524,18 @@ function loadScores() {
   }
 }
 
+/* ── CLEAN DASHES HELPER ── */
+function cleanDashes(text) {
+  return text.replace(/\s*\u2014\s*/g, ' \u2013 ');
+}
+
 /* ── RENDER PERSONALITY SUMMARY ── */
 function renderSummary(report) {
   const el = document.getElementById('personalitySummary');
   el.innerHTML = report.personality_summary
     .split('\n\n')
     .filter(p => p.trim())
-    .map(p => `<p>${p.trim()}</p>`)
+    .map(p => `<p>${cleanDashes(p.trim())}</p>`)
     .join('');
 }
 
@@ -540,7 +545,7 @@ function renderRelationship(report) {
   el.innerHTML = report.relationship_style
     .split('\n\n')
     .filter(p => p.trim())
-    .map(p => `<p>${p.trim()}</p>`)
+    .map(p => `<p>${cleanDashes(p.trim())}</p>`)
     .join('');
 }
 
@@ -550,7 +555,7 @@ function renderMoney(report) {
   el.innerHTML = report.money_management
     .split('\n\n')
     .filter(p => p.trim())
-    .map(p => `<p>${p.trim()}</p>`)
+    .map(p => `<p>${cleanDashes(p.trim())}</p>`)
     .join('');
 }
 
@@ -559,8 +564,8 @@ function renderCareers(report) {
   const grid = document.getElementById('careersGrid');
   grid.innerHTML = report.career_paths.map(c => `
     <div class="career-card">
-      <div class="career-title">${c.title}</div>
-      <div class="career-desc">${c.description}</div>
+      <div class="career-title">${cleanDashes(c.title)}</div>
+      <div class="career-desc">${cleanDashes(c.description)}</div>
       <div class="career-salary">
         PKR ${(c.salary_pkr_min/1000).toFixed(0)}k
         <span class="sep">—</span>
@@ -574,10 +579,10 @@ function renderCareers(report) {
 function renderSW(report) {
   const grid = document.getElementById('swGrid');
   const sItems = report.strengths.map(s => `
-    <div class="sw-item"><div class="sw-dot s"></div><span>${s}</span></div>
+    <div class="sw-item"><div class="sw-dot s"></div><span>${cleanDashes(s)}</span></div>
   `).join('');
   const wItems = report.weaknesses.map(w => `
-    <div class="sw-item"><div class="sw-dot w"></div><span>${w}</span></div>
+    <div class="sw-item"><div class="sw-dot w"></div><span>${cleanDashes(w)}</span></div>
   `).join('');
   grid.innerHTML = `
     <div class="sw-group">
@@ -597,7 +602,7 @@ function renderTips(report) {
   list.innerHTML = report.growth_tips.map((t, i) => `
     <div class="tip-item">
       <div class="tip-num">${String(i+1).padStart(2,'0')}</div>
-      <div class="tip-text">${t}</div>
+      <div class="tip-text">${cleanDashes(t)}</div>
     </div>
   `).join('');
 }
@@ -608,7 +613,7 @@ function renderFamous(report) {
   grid.innerHTML = report.famous_examples.map(f => `
     <div class="famous-card">
       <div class="famous-name">${f.name}</div>
-      <div class="famous-desc">${f.known_for}</div>
+      <div class="famous-desc">${cleanDashes(f.known_for)}</div>
     </div>
   `).join('');
 }
@@ -644,7 +649,7 @@ function init() {
   // Update hero
   document.getElementById('typeLetters').textContent = mbti;
   document.getElementById('typeName').textContent = report.tagline;
-  document.getElementById('heroSummary').textContent = report.hero_quote;
+  document.getElementById('heroSummary').textContent = cleanDashes(report.hero_quote);
   document.title = `Mizaj — You are ${mbti}: ${report.tagline}`;
 
   // Update share card
