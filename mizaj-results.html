@@ -130,14 +130,24 @@ section{position:relative;z-index:1;padding:90px 6%}
 @media(max-width:700px){.careers-grid{grid-template-columns:1fr}.dimension-bars{gap:12px}.dim-bar{min-width:80px}}
 @media(max-width:500px){.hero-actions{flex-direction:column;align-items:center}.share-btns{flex-direction:column;align-items:center}}
 
+/* ── PRINT INSTRUCTION MODAL ── */
+.print-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center}
+.print-modal-overlay.show{display:flex}
+.print-modal{background:#1A1A24;border:1px solid var(--border);padding:40px;max-width:480px;width:90%;text-align:center}
+.print-modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold);margin-bottom:16px}
+.print-modal p{font-size:.9rem;color:rgba(245,240,232,.7);line-height:1.7;margin-bottom:8px}
+.print-modal .step{background:rgba(201,168,76,.08);border:1px solid var(--border);padding:12px 16px;margin:8px 0;font-size:.85rem;color:var(--cream);text-align:left;display:flex;align-items:center;gap:12px}
+.print-modal .step-num{background:var(--gold);color:var(--ink);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}
+.print-modal-btns{display:flex;gap:12px;margin-top:24px;justify-content:center}
+.btn-print-go{background:var(--gold);color:var(--ink);padding:12px 28px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer}
+.btn-print-cancel{background:transparent;border:1px solid var(--border-soft);color:var(--muted);padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+
 /* ── PRINT / PDF STYLES ── */
 @media print {
-  @page { margin: 16mm 14mm; }
+  @page { margin:16mm 14mm; }
 
-  /* Hide all UI elements — only content + logo */
+  /* Hide all UI — only logo + content */
   nav .nav-actions,
-  nav .btn-share-nav,
-  nav .lang-toggle,
   .hero-glow,.hero-glow-2,
   .hero-actions,
   .scroll-hint,
@@ -145,22 +155,23 @@ section{position:relative;z-index:1;padding:90px 6%}
   .result-intro,
   .share-section,
   .toast,
+  .print-modal-overlay,
   body::before { display:none !important; }
 
-  /* Clean background */
+  /* Clean white background */
   body { background:#fff !important; color:#1a1a1a !important; }
 
-  /* Nav — show only logo */
-  nav { position:static; background:#fff !important; border-bottom:2px solid #C9A84C; padding:12px 6%; backdrop-filter:none; }
+  /* Nav — logo only */
+  nav { position:static !important; background:#fff !important; border-bottom:2px solid #C9A84C; padding:12px 6%; backdrop-filter:none !important; }
   .nav-logo { color:#C9A84C !important; font-size:1.6rem; }
 
-  /* Hero — compact */
+  /* Hero */
   .hero { min-height:auto !important; padding:30px 6% 20px !important; }
   .type-letters { color:#1a1a1a !important; text-shadow:none !important; font-size:5rem !important; }
   .type-name { color:#C9A84C !important; }
   .hero-summary { color:#444 !important; font-size:1.1rem !important; opacity:1 !important; }
 
-  /* Section text */
+  /* Sections */
   .section-eyebrow { color:#C9A84C !important; }
   .section-title { color:#1a1a1a !important; }
   .section-title em { color:#C9A84C !important; }
@@ -180,7 +191,7 @@ section{position:relative;z-index:1;padding:90px 6%}
   .sw-group h3.strength { color:#3a9e72 !important; }
   .sw-group h3.weakness { color:#c0603a !important; }
 
-  /* Growth tips */
+  /* Tips */
   .tip-item { background:#fff !important; border:1px solid #ddd !important; border-left:3px solid #C9A84C !important; break-inside:avoid; }
   .tip-num { color:#C9A84C !important; opacity:1 !important; }
   .tip-text { color:#333 !important; }
@@ -190,12 +201,8 @@ section{position:relative;z-index:1;padding:90px 6%}
   .famous-name { color:#1a1a1a !important; }
   .famous-desc { color:#555 !important; }
 
-  /* Dividers */
   .divider { background:#ddd !important; }
-
-  /* Page breaks */
   section { page-break-inside:avoid; }
-  hr.divider { page-break-after:avoid; }
 }
 </style>
 </head>
@@ -252,7 +259,7 @@ section{position:relative;z-index:1;padding:90px 6%}
     <button class="btn-primary" onclick="scrollToShare()">
       📤 <span data-en="Share on WhatsApp" data-ur="واٹس ایپ پر شیئر کریں">Share on WhatsApp</span>
     </button>
-    <button class="btn-ghost-hero" onclick="printPDF()">
+    <button class="btn-ghost-hero" onclick="showPrintModal()">
       📄 <span data-en="Download PDF" data-ur="PDF ڈاؤن لوڈ کریں">Download PDF</span>
     </button>
   </div>
@@ -271,9 +278,9 @@ section{position:relative;z-index:1;padding:90px 6%}
     <h2 class="section-title" data-en="Your <em>Personality</em> Profile" data-ur="آپ کا <em>شخصیت</em> پروفائل">Your <em>Personality</em> Profile</h2>
     <div class="summary-text" id="personalitySummary">
       <p>You are the person who feels things more deeply than anyone around you realises. On the surface, you may seem quiet, even reserved but inside, there is a rich, vivid inner world that most people never get to see. You are driven not by money, status, or applause, but by something harder to name: the need for your life to mean something. You need your work, your relationships, and your choices to align with who you truly are. When they don't, no amount of external success can fill the gap.</p>
-      <p>As an INFP, you are wired for empathy. You pick up on things others miss the tension in a room, the sadness behind someone's smile, the injustice buried in a system that everyone else has accepted as normal. This makes you a natural writer, counsellor, teacher, and changemaker. You do not just observe the world — you feel its weight and want to make it better.</p>
-      <p>In Pakistan's social landscape, being an INFP can sometimes feel like being misunderstood. You are not the loudest voice in the room. You do not always play by unspoken rules. You may have been told to be 'more practical', to stop dreaming, or to just settle. But your idealism is not a weakness — it is your most powerful asset when it is pointed in the right direction.</p>
-      <p>You work best when you have creative freedom, when the work feels meaningful, and when you are not micromanaged or suffocated by rigid systems. You struggle with harsh criticism, conflict, and environments that reward performance over authenticity. You can be slow to start tasks that don't excite you — but once you care about something, your focus and dedication are extraordinary.</p>
+      <p>As an INFP, you are wired for empathy. You pick up on things others miss the tension in a room, the sadness behind someone's smile, the injustice buried in a system that everyone else has accepted as normal. This makes you a natural writer, counsellor, teacher, and changemaker. You do not just observe the world you feel its weight and want to make it better.</p>
+      <p>In Pakistan's social landscape, being an INFP can sometimes feel like being misunderstood. You are not the loudest voice in the room. You do not always play by unspoken rules. You may have been told to be 'more practical', to stop dreaming, or to just settle. But your idealism is not a weakness it is your most powerful asset when it is pointed in the right direction.</p>
+      <p>You work best when you have creative freedom, when the work feels meaningful, and when you are not micromanaged or suffocated by rigid systems. You struggle with harsh criticism, conflict, and environments that reward performance over authenticity. You can be slow to start tasks that don't excite you but once you care about something, your focus and dedication are extraordinary.</p>
     </div>
   </div>
 </section>
@@ -297,7 +304,7 @@ section{position:relative;z-index:1;padding:90px 6%}
 <section>
   <div class="section-inner">
     <div class="section-eyebrow" data-en="Strengths & Growth" data-ur="خوبیاں اور بہتری">Strengths & Growth</div>
-    <h2 class="section-title" data-en="What <em>drives</em> you — and what holds you back" data-ur="کیا آپ کو <em>آگے</em> بڑھاتا ہے — اور کیا روکتا ہے">What <em>drives</em> you — and what holds you back</h2>
+    <h2 class="section-title" data-en="What <em>drives</em> you — and what holds you back" data-ur="کیا آپ کو <em>آگے</em> بڑھاتا ہے — اور کیا روکتا ہے">What <em>drives</em> you and what holds you back</h2>
     <div class="sw-grid" id="swGrid">
       <!-- Dynamically populated -->
     </div>
@@ -312,9 +319,9 @@ section{position:relative;z-index:1;padding:90px 6%}
     <div class="section-eyebrow" data-en="Relationships" data-ur="رشتے">Relationships</div>
     <h2 class="section-title" data-en="How You <em>Love</em> and Connect" data-ur="آپ کیسے <em>محبت</em> کرتے اور جڑتے ہیں">How You <em>Love</em> and Connect</h2>
     <div class="text-block" id="relationshipBlock">
-      <p>In relationships — friendships, romantic partnerships, and family — INFPs are thoughtful, deeply loyal, and genuinely invested in the other person's inner world. You do not do surface-level. You want to know what someone actually thinks, fears, hopes for, and believes. Small talk tires you; real conversation energises you.</p>
-      <p>You tend to give a great deal of yourself in close relationships, sometimes more than you receive. You feel love through acts of understanding — when someone truly sees you, not just the version of you they find convenient. When that reciprocity is missing, you withdraw quietly rather than confront.</p>
-      <p>In the Pakistani family and social context, INFPs often navigate a tension between their deeply personal values and the expectations placed on them by family, community, or culture. Finding people and spaces where you can be fully authentic is not a luxury for you — it is essential to your mental health.</p>
+      <p>In relationships friendships, romantic partnerships, and family INFPs are thoughtful, deeply loyal, and genuinely invested in the other person's inner world. You do not do surface-level. You want to know what someone actually thinks, fears, hopes for, and believes. Small talk tires you; real conversation energises you.</p>
+      <p>You tend to give a great deal of yourself in close relationships, sometimes more than you receive. You feel love through acts of understanding when someone truly sees you, not just the version of you they find convenient. When that reciprocity is missing, you withdraw quietly rather than confront.</p>
+      <p>In the Pakistani family and social context, INFPs often navigate a tension between their deeply personal values and the expectations placed on them by family, community, or culture. Finding people and spaces where you can be fully authentic is not a luxury for you it is essential to your mental health.</p>
     </div>
   </div>
 </section>
@@ -327,9 +334,9 @@ section{position:relative;z-index:1;padding:90px 6%}
     <div class="section-eyebrow" data-en="Money & Finance" data-ur="پیسہ اور مالیات">Money & Finance</div>
     <h2 class="section-title" data-en="Your <em>Financial</em> Personality" data-ur="آپ کی <em>مالی</em> شخصیت">Your <em>Financial</em> Personality</h2>
     <div class="text-block" id="moneyBlock">
-      <p>Money is rarely the primary motivator for INFPs — which can be both a strength and a liability. You are unlikely to chase a career purely for income, which protects you from a hollow professional life but can leave you financially underprepared if you are not intentional.</p>
-      <p>INFPs tend to spend on experiences, people, and things that carry emotional meaning — books, travel, gifts for loved ones, causes they believe in. Budgeting can feel restrictive and uninspiring unless it is framed as a tool for freedom rather than control.</p>
-      <p>The most important financial move for an INFP is to build a financial floor — an emergency fund and a basic savings habit — so that your sensitivity and need for autonomy are protected. Financial pressure is one of the fastest ways to trap an INFP in work that kills their spirit.</p>
+      <p>Money is rarely the primary motivator for INFPs which can be both a strength and a liability. You are unlikely to chase a career purely for income, which protects you from a hollow professional life but can leave you financially underprepared if you are not intentional.</p>
+      <p>INFPs tend to spend on experiences, people, and things that carry emotional meaning books, travel, gifts for loved ones, causes they believe in. Budgeting can feel restrictive and uninspiring unless it is framed as a tool for freedom rather than control.</p>
+      <p>The most important financial move for an INFP is to build a financial floor an emergency fund and a basic savings habit so that your sensitivity and need for autonomy are protected. Financial pressure is one of the fastest ways to trap an INFP in work that kills their spirit.</p>
     </div>
   </div>
 </section>
@@ -384,7 +391,7 @@ section{position:relative;z-index:1;padding:90px 6%}
       <span data-en="Share on WhatsApp" data-ur="واٹس ایپ پر شیئر کریں">Share on WhatsApp</span>
     </button>
     <button class="btn-copy" onclick="copyLink()" data-en="Copy Link" data-ur="لنک کاپی کریں">Copy Link</button>
-    <button class="btn-pdf" onclick="printPDF()" data-en="Download PDF" data-ur="PDF ڈاؤن لوڈ کریں">Download PDF</button>
+    <button class="btn-pdf" onclick="showPrintModal()" data-en="Download PDF" data-ur="PDF ڈاؤن لوڈ کریں">Download PDF</button>
   </div>
 </div>
 
@@ -701,15 +708,38 @@ function toggleLang() {
   });
 }
 
-/* ── PRINT PDF ── */
-function printPDF() {
-  // Brief pause to ensure fonts/content are loaded
-  setTimeout(() => window.print(), 300);
-}
-
 init();
 loadResult();
 window.onload = loadResult;
 </script>
+<!-- ── PRINT INSTRUCTION MODAL ── -->
+<div class="print-modal-overlay" id="printModal">
+  <div class="print-modal">
+    <h3>Before You Download</h3>
+    <p style="margin-bottom:16px">Follow these steps for a clean PDF without browser headers:</p>
+    <div class="step"><div class="step-num">1</div>Click <strong style="color:var(--gold);margin:0 4px">Print</strong> below to open the print dialog</div>
+    <div class="step"><div class="step-num">2</div>Find <strong style="color:var(--gold);margin:0 4px">"More settings"</strong> or <strong style="color:var(--gold);margin:0 4px">"Options"</strong></div>
+    <div class="step"><div class="step-num">3</div>Uncheck <strong style="color:var(--gold);margin:0 4px">"Headers and footers"</strong></div>
+    <div class="step"><div class="step-num">4</div>Set destination to <strong style="color:var(--gold);margin:0 4px">"Save as PDF"</strong></div>
+    <div class="print-modal-btns">
+      <button class="btn-print-go" onclick="doPrint()">Print / Save PDF</button>
+      <button class="btn-print-cancel" onclick="hidePrintModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPrintModal() {
+  document.getElementById('printModal').classList.add('show');
+}
+function hidePrintModal() {
+  document.getElementById('printModal').classList.remove('show');
+}
+function doPrint() {
+  hidePrintModal();
+  setTimeout(() => window.print(), 300);
+}
+</script>
+
 </body>
 </html>
