@@ -377,6 +377,11 @@ async function saveAnswer(question_id, selected_option) {
 async function completeTest(result_type) {
   const attempt_id = localStorage.getItem("attempt_id");
 
+  if (!attempt_id || attempt_id === 'null') {
+    console.error("❌ No attempt_id found in localStorage");
+    throw new Error("No attempt_id found");
+  }
+
   const res = await fetch(
     `${API_BASE}/complete-test?attempt_id=${attempt_id}&result_type=${result_type}`,
     { method: "POST" }
@@ -566,7 +571,8 @@ async function finishTest() {
   const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
 
   questions.forEach((q, i) => {
-    const ans = answers[i] || 'a';
+    const ans = answers[i];
+    if (!ans) return; // ✅ skip unanswered — never default to 'a'
     if (ans === 'a') scores[q.pole]++;
     else scores[opposites[q.pole]]++;
   });
