@@ -131,7 +131,7 @@ section{position:relative;z-index:1;padding:90px 6%}
 @media(max-width:500px){.hero-actions{flex-direction:column;align-items:center}.share-btns{flex-direction:column;align-items:center}}
 
 /* ── PRINT INSTRUCTION MODAL ── */
-.print-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center}
+.print-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center}
 .print-modal-overlay.show{display:flex}
 .print-modal{background:#1A1A24;border:1px solid var(--border);padding:40px;max-width:480px;width:90%;text-align:center}
 .print-modal h3{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--gold);margin-bottom:16px}
@@ -203,6 +203,9 @@ section{position:relative;z-index:1;padding:90px 6%}
 
   .divider { background:#ddd !important; }
   section { page-break-inside:avoid; }
+
+  /* Fix dash rendering */
+  * { -webkit-font-smoothing:antialiased; font-variant-ligatures:none; }
 }
 </style>
 </head>
@@ -278,9 +281,9 @@ section{position:relative;z-index:1;padding:90px 6%}
     <h2 class="section-title" data-en="Your <em>Personality</em> Profile" data-ur="آپ کا <em>شخصیت</em> پروفائل">Your <em>Personality</em> Profile</h2>
     <div class="summary-text" id="personalitySummary">
       <p>You are the person who feels things more deeply than anyone around you realises. On the surface, you may seem quiet, even reserved but inside, there is a rich, vivid inner world that most people never get to see. You are driven not by money, status, or applause, but by something harder to name: the need for your life to mean something. You need your work, your relationships, and your choices to align with who you truly are. When they don't, no amount of external success can fill the gap.</p>
-      <p>As an INFP, you are wired for empathy. You pick up on things others miss the tension in a room, the sadness behind someone's smile, the injustice buried in a system that everyone else has accepted as normal. This makes you a natural writer, counsellor, teacher, and changemaker. You do not just observe the world you feel its weight and want to make it better.</p>
-      <p>In Pakistan's social landscape, being an INFP can sometimes feel like being misunderstood. You are not the loudest voice in the room. You do not always play by unspoken rules. You may have been told to be 'more practical', to stop dreaming, or to just settle. But your idealism is not a weakness it is your most powerful asset when it is pointed in the right direction.</p>
-      <p>You work best when you have creative freedom, when the work feels meaningful, and when you are not micromanaged or suffocated by rigid systems. You struggle with harsh criticism, conflict, and environments that reward performance over authenticity. You can be slow to start tasks that don't excite you but once you care about something, your focus and dedication are extraordinary.</p>
+      <p>As an INFP, you are wired for empathy. You pick up on things others miss the tension in a room, the sadness behind someone's smile, the injustice buried in a system that everyone else has accepted as normal. This makes you a natural writer, counsellor, teacher, and changemaker. You do not just observe the world — you feel its weight and want to make it better.</p>
+      <p>In Pakistan's social landscape, being an INFP can sometimes feel like being misunderstood. You are not the loudest voice in the room. You do not always play by unspoken rules. You may have been told to be 'more practical', to stop dreaming, or to just settle. But your idealism is not a weakness — it is your most powerful asset when it is pointed in the right direction.</p>
+      <p>You work best when you have creative freedom, when the work feels meaningful, and when you are not micromanaged or suffocated by rigid systems. You struggle with harsh criticism, conflict, and environments that reward performance over authenticity. You can be slow to start tasks that don't excite you — but once you care about something, your focus and dedication are extraordinary.</p>
     </div>
   </div>
 </section>
@@ -304,7 +307,7 @@ section{position:relative;z-index:1;padding:90px 6%}
 <section>
   <div class="section-inner">
     <div class="section-eyebrow" data-en="Strengths & Growth" data-ur="خوبیاں اور بہتری">Strengths & Growth</div>
-    <h2 class="section-title" data-en="What <em>drives</em> you — and what holds you back" data-ur="کیا آپ کو <em>آگے</em> بڑھاتا ہے — اور کیا روکتا ہے">What <em>drives</em> you and what holds you back</h2>
+    <h2 class="section-title" data-en="What <em>drives</em> you — and what holds you back" data-ur="کیا آپ کو <em>آگے</em> بڑھاتا ہے — اور کیا روکتا ہے">What <em>drives</em> you — and what holds you back</h2>
     <div class="sw-grid" id="swGrid">
       <!-- Dynamically populated -->
     </div>
@@ -319,9 +322,9 @@ section{position:relative;z-index:1;padding:90px 6%}
     <div class="section-eyebrow" data-en="Relationships" data-ur="رشتے">Relationships</div>
     <h2 class="section-title" data-en="How You <em>Love</em> and Connect" data-ur="آپ کیسے <em>محبت</em> کرتے اور جڑتے ہیں">How You <em>Love</em> and Connect</h2>
     <div class="text-block" id="relationshipBlock">
-      <p>In relationships friendships, romantic partnerships, and family INFPs are thoughtful, deeply loyal, and genuinely invested in the other person's inner world. You do not do surface-level. You want to know what someone actually thinks, fears, hopes for, and believes. Small talk tires you; real conversation energises you.</p>
-      <p>You tend to give a great deal of yourself in close relationships, sometimes more than you receive. You feel love through acts of understanding when someone truly sees you, not just the version of you they find convenient. When that reciprocity is missing, you withdraw quietly rather than confront.</p>
-      <p>In the Pakistani family and social context, INFPs often navigate a tension between their deeply personal values and the expectations placed on them by family, community, or culture. Finding people and spaces where you can be fully authentic is not a luxury for you it is essential to your mental health.</p>
+      <p>In relationships — friendships, romantic partnerships, and family — INFPs are thoughtful, deeply loyal, and genuinely invested in the other person's inner world. You do not do surface-level. You want to know what someone actually thinks, fears, hopes for, and believes. Small talk tires you; real conversation energises you.</p>
+      <p>You tend to give a great deal of yourself in close relationships, sometimes more than you receive. You feel love through acts of understanding — when someone truly sees you, not just the version of you they find convenient. When that reciprocity is missing, you withdraw quietly rather than confront.</p>
+      <p>In the Pakistani family and social context, INFPs often navigate a tension between their deeply personal values and the expectations placed on them by family, community, or culture. Finding people and spaces where you can be fully authentic is not a luxury for you — it is essential to your mental health.</p>
     </div>
   </div>
 </section>
@@ -334,9 +337,9 @@ section{position:relative;z-index:1;padding:90px 6%}
     <div class="section-eyebrow" data-en="Money & Finance" data-ur="پیسہ اور مالیات">Money & Finance</div>
     <h2 class="section-title" data-en="Your <em>Financial</em> Personality" data-ur="آپ کی <em>مالی</em> شخصیت">Your <em>Financial</em> Personality</h2>
     <div class="text-block" id="moneyBlock">
-      <p>Money is rarely the primary motivator for INFPs which can be both a strength and a liability. You are unlikely to chase a career purely for income, which protects you from a hollow professional life but can leave you financially underprepared if you are not intentional.</p>
-      <p>INFPs tend to spend on experiences, people, and things that carry emotional meaning books, travel, gifts for loved ones, causes they believe in. Budgeting can feel restrictive and uninspiring unless it is framed as a tool for freedom rather than control.</p>
-      <p>The most important financial move for an INFP is to build a financial floor an emergency fund and a basic savings habit so that your sensitivity and need for autonomy are protected. Financial pressure is one of the fastest ways to trap an INFP in work that kills their spirit.</p>
+      <p>Money is rarely the primary motivator for INFPs — which can be both a strength and a liability. You are unlikely to chase a career purely for income, which protects you from a hollow professional life but can leave you financially underprepared if you are not intentional.</p>
+      <p>INFPs tend to spend on experiences, people, and things that carry emotional meaning — books, travel, gifts for loved ones, causes they believe in. Budgeting can feel restrictive and uninspiring unless it is framed as a tool for freedom rather than control.</p>
+      <p>The most important financial move for an INFP is to build a financial floor — an emergency fund and a basic savings habit — so that your sensitivity and need for autonomy are protected. Financial pressure is one of the fastest ways to trap an INFP in work that kills their spirit.</p>
     </div>
   </div>
 </section>
@@ -708,19 +711,15 @@ function toggleLang() {
   });
 }
 
-init();
-loadResult();
-window.onload = loadResult;
-</script>
 <!-- ── PRINT INSTRUCTION MODAL ── -->
 <div class="print-modal-overlay" id="printModal">
   <div class="print-modal">
     <h3>Before You Download</h3>
     <p style="margin-bottom:16px">Follow these steps for a clean PDF without browser headers:</p>
-    <div class="step"><div class="step-num">1</div>Click <strong style="color:var(--gold);margin:0 4px">Print</strong> below to open the print dialog</div>
-    <div class="step"><div class="step-num">2</div>Find <strong style="color:var(--gold);margin:0 4px">"More settings"</strong> or <strong style="color:var(--gold);margin:0 4px">"Options"</strong></div>
+    <div class="step"><div class="step-num">1</div>Click <strong style="color:var(--gold);margin:0 4px">"Print"</strong> below to open the print dialog</div>
+    <div class="step"><div class="step-num">2</div>Click <strong style="color:var(--gold);margin:0 4px">"More settings"</strong> or <strong style="color:var(--gold);margin:0 4px">"Options"</strong></div>
     <div class="step"><div class="step-num">3</div>Uncheck <strong style="color:var(--gold);margin:0 4px">"Headers and footers"</strong></div>
-    <div class="step"><div class="step-num">4</div>Set destination to <strong style="color:var(--gold);margin:0 4px">"Save as PDF"</strong></div>
+    <div class="step"><div class="step-num">4</div>Set destination to <strong style="color:var(--gold);margin:0 4px">"Save as PDF"</strong> then Save</div>
     <div class="print-modal-btns">
       <button class="btn-print-go" onclick="doPrint()">Print / Save PDF</button>
       <button class="btn-print-cancel" onclick="hidePrintModal()">Cancel</button>
@@ -729,6 +728,7 @@ window.onload = loadResult;
 </div>
 
 <script>
+/* ── PRINT MODAL ── */
 function showPrintModal() {
   document.getElementById('printModal').classList.add('show');
 }
@@ -737,8 +737,35 @@ function hidePrintModal() {
 }
 function doPrint() {
   hidePrintModal();
-  setTimeout(() => window.print(), 300);
+
+  // Replace em dashes with spaced en dashes for clean print rendering
+  const printSelectors = [
+    '.summary-text', '.text-block', '.sw-item span',
+    '.tip-text', '.career-desc', '.famous-desc',
+    '.career-title', '.famous-name', '.section-title'
+  ];
+  const originals = [];
+  printSelectors.forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => {
+      originals.push({ el, html: el.innerHTML });
+      el.innerHTML = el.innerHTML
+        .replace(/\s*\u2014\s*/g, ' \u2013 ')   // em dash → en dash
+        .replace(/\s*&#8212;\s*/g, ' \u2013 ');  // html entity version
+    });
+  });
+
+  setTimeout(() => {
+    window.print();
+    // Restore original content after print dialog closes
+    setTimeout(() => {
+      originals.forEach(({ el, html }) => { el.innerHTML = html; });
+    }, 1500);
+  }, 300);
 }
+
+init();
+loadResult();
+window.onload = loadResult;
 </script>
 
 </body>
