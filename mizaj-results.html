@@ -129,6 +129,74 @@ section{position:relative;z-index:1;padding:90px 6%}
 /* RESPONSIVE */
 @media(max-width:700px){.careers-grid{grid-template-columns:1fr}.dimension-bars{gap:12px}.dim-bar{min-width:80px}}
 @media(max-width:500px){.hero-actions{flex-direction:column;align-items:center}.share-btns{flex-direction:column;align-items:center}}
+
+/* ── PRINT / PDF STYLES ── */
+@media print {
+  @page { margin: 16mm 14mm; }
+
+  /* Hide all UI elements — only content + logo */
+  nav .nav-actions,
+  nav .btn-share-nav,
+  nav .lang-toggle,
+  .hero-glow,.hero-glow-2,
+  .hero-actions,
+  .scroll-hint,
+  .dimension-bars,
+  .result-intro,
+  .share-section,
+  .toast,
+  body::before { display:none !important; }
+
+  /* Clean background */
+  body { background:#fff !important; color:#1a1a1a !important; }
+
+  /* Nav — show only logo */
+  nav { position:static; background:#fff !important; border-bottom:2px solid #C9A84C; padding:12px 6%; backdrop-filter:none; }
+  .nav-logo { color:#C9A84C !important; font-size:1.6rem; }
+
+  /* Hero — compact */
+  .hero { min-height:auto !important; padding:30px 6% 20px !important; }
+  .type-letters { color:#1a1a1a !important; text-shadow:none !important; font-size:5rem !important; }
+  .type-name { color:#C9A84C !important; }
+  .hero-summary { color:#444 !important; font-size:1.1rem !important; opacity:1 !important; }
+
+  /* Section text */
+  .section-eyebrow { color:#C9A84C !important; }
+  .section-title { color:#1a1a1a !important; }
+  .section-title em { color:#C9A84C !important; }
+  .summary-text,.text-block { color:#333 !important; }
+  .summary-text p,.text-block p { color:#333 !important; }
+
+  /* Career cards */
+  .career-card { background:#fff !important; border:1px solid #ddd !important; break-inside:avoid; }
+  .career-title { color:#1a1a1a !important; }
+  .career-desc { color:#555 !important; }
+  .career-salary { color:#C9A84C !important; border-color:#ddd !important; }
+  .careers-grid { grid-template-columns:1fr 1fr !important; gap:12px !important; }
+
+  /* Strengths / weaknesses */
+  .sw-item { background:#fff !important; border:1px solid #ddd !important; color:#333 !important; break-inside:avoid; }
+  .sw-item span { color:#333 !important; }
+  .sw-group h3.strength { color:#3a9e72 !important; }
+  .sw-group h3.weakness { color:#c0603a !important; }
+
+  /* Growth tips */
+  .tip-item { background:#fff !important; border:1px solid #ddd !important; border-left:3px solid #C9A84C !important; break-inside:avoid; }
+  .tip-num { color:#C9A84C !important; opacity:1 !important; }
+  .tip-text { color:#333 !important; }
+
+  /* Famous */
+  .famous-card { background:#fff !important; border:1px solid #ddd !important; break-inside:avoid; }
+  .famous-name { color:#1a1a1a !important; }
+  .famous-desc { color:#555 !important; }
+
+  /* Dividers */
+  .divider { background:#ddd !important; }
+
+  /* Page breaks */
+  section { page-break-inside:avoid; }
+  hr.divider { page-break-after:avoid; }
+}
 </style>
 </head>
 <body>
@@ -184,7 +252,7 @@ section{position:relative;z-index:1;padding:90px 6%}
     <button class="btn-primary" onclick="scrollToShare()">
       📤 <span data-en="Share on WhatsApp" data-ur="واٹس ایپ پر شیئر کریں">Share on WhatsApp</span>
     </button>
-    <button class="btn-ghost-hero" onclick="window.print()">
+    <button class="btn-ghost-hero" onclick="printPDF()">
       📄 <span data-en="Download PDF" data-ur="PDF ڈاؤن لوڈ کریں">Download PDF</span>
     </button>
   </div>
@@ -316,7 +384,7 @@ section{position:relative;z-index:1;padding:90px 6%}
       <span data-en="Share on WhatsApp" data-ur="واٹس ایپ پر شیئر کریں">Share on WhatsApp</span>
     </button>
     <button class="btn-copy" onclick="copyLink()" data-en="Copy Link" data-ur="لنک کاپی کریں">Copy Link</button>
-    <button class="btn-pdf" onclick="window.print()" data-en="Download PDF" data-ur="PDF ڈاؤن لوڈ کریں">Download PDF</button>
+    <button class="btn-pdf" onclick="printPDF()" data-en="Download PDF" data-ur="PDF ڈاؤن لوڈ کریں">Download PDF</button>
   </div>
 </div>
 
@@ -631,6 +699,12 @@ function toggleLang() {
     const val = lang === 'ur' ? el.getAttribute('data-ur') : el.getAttribute('data-en');
     if (val) el.innerHTML = val;
   });
+}
+
+/* ── PRINT PDF ── */
+function printPDF() {
+  // Brief pause to ensure fonts/content are loaded
+  setTimeout(() => window.print(), 300);
 }
 
 init();
