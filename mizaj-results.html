@@ -437,19 +437,24 @@ async function loadResult() {
   }
 
   try {
+    // ✅ Always fetch latest from backend first
     const res = await fetch(`https://web-production-1f476a.up.railway.app/result/${user_id}`);
 
     if (!res.ok) throw new Error("not found");
 
     const data = await res.json();
-    console.log("✅ Result:", data);
+    console.log("✅ Result from backend:", data);
 
     const type = data.type || data.result_type;
+
+    // ✅ Update localStorage to match latest backend result
+    localStorage.setItem("mizaj_mbti", type);
+
     applyResult(type);
 
   } catch (err) {
     console.error("❌ Error loading result:", err);
-    // fallback to localStorage if backend fails
+    // fallback to localStorage only if backend fails
     if (localType) {
       console.log("⚠️ Using localStorage fallback:", localType);
       applyResult(localType);
