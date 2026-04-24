@@ -526,7 +526,11 @@ function loadScores() {
 
 /* ── CLEAN DASHES HELPER ── */
 function cleanDashes(text) {
-  return text.replace(/\s*\u2014\s*/g, ' \u2013 ');
+  if (!text) return '';
+  return text
+    .replace(/\s*\u2014\s*/g, ' ')   // em dash — → space
+    .replace(/\s*\u2013\s*/g, ' ')   // en dash – → space
+    .replace(/\s+\-\s+/g, ' ');      // spaced hyphen - → space
 }
 
 /* ── RENDER PERSONALITY SUMMARY ── */
