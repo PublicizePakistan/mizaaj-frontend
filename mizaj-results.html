@@ -121,6 +121,8 @@ section{position:relative;z-index:1;padding:90px 6%}
 .btn-copy:hover{border-color:var(--gold);color:var(--gold)}
 .btn-pdf{background:transparent;border:1px solid var(--border);color:var(--cream);padding:13px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .3s}
 .btn-pdf:hover{border-color:var(--gold);color:var(--gold)}
+.btn-logout{background:transparent;border:1px solid rgba(255,80,80,.4);color:rgba(255,120,120,.8);padding:13px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .3s}
+.btn-logout:hover{border-color:rgba(255,80,80,.8);color:rgb(255,100,100)}
 
 /* TOAST */
 .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--ink);padding:12px 28px;font-size:.82rem;letter-spacing:.08em;opacity:0;transition:all .4s ease;pointer-events:none;z-index:200;font-weight:500}
@@ -395,6 +397,7 @@ section{position:relative;z-index:1;padding:90px 6%}
     </button>
     <button class="btn-copy" onclick="copyLink()" data-en="Copy Link" data-ur="لنک کاپی کریں">Copy Link</button>
     <button class="btn-pdf" onclick="showPrintModal()" data-en="Download PDF" data-ur="PDF ڈاؤن لوڈ کریں">Download PDF</button>
+    <button class="btn-logout" onclick="logout()" data-en="Log Out" data-ur="لاگ آؤٹ">Log Out</button>
   </div>
 </div>
 
@@ -773,6 +776,16 @@ function doPrint() {
       originals.forEach(({ el, html }) => { el.innerHTML = html; });
     }, 1500);
   }, 300);
+}
+
+/* ── LOGOUT ── */
+function logout() {
+  localStorage.removeItem('user_id');
+  localStorage.removeItem('attempt_id');
+  localStorage.removeItem('mizaj_mbti');
+  localStorage.removeItem('mizaj_scores');
+  localStorage.removeItem('mizaj_answers');
+  window.location.href = 'mizaj-auth.html';
 }
 
 init();
