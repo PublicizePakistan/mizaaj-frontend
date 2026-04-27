@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Mizaj</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0D0D12;--ink-soft:#1A1A24;--ink-mid:#2B2B38;--gold:#C9A84C;--gold-light:#E8CC7A;--gold-dim:rgba(201,168,76,0.15);--cream:#F5F0E8;--muted:#6B6B7E;--card-bg:rgba(255,255,255,0.035);--border:rgba(201,168,76,0.18);--border-soft:rgba(255,255,255,0.07)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 6%;border-bottom:1px solid transparent;transition:all .4s ease}
+nav.scrolled{background:rgba(13,13,18,.88);border-bottom-color:var(--border-soft);backdrop-filter:blur(20px)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-decoration:none;text-transform:uppercase}
+.nav-logo span{display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%;margin-left:4px;vertical-align:middle;margin-bottom:4px}
+.btn-nav{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:9px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .3s ease}
+.btn-nav:hover{background:var(--gold);color:var(--ink)}
+
+.page-hero{padding:160px 6% 80px;text-align:center;position:relative;overflow:hidden}
+.page-hero-glow{position:absolute;width:600px;height:400px;background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.section-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.section-eyebrow::before,.section-eyebrow::after{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,6vw,5.5rem);font-weight:300;line-height:1.05;margin-bottom:20px}
+.page-title em{font-style:italic;color:var(--gold)}
+.page-sub{font-size:1.05rem;color:rgba(245,240,232,.55);max-width:480px;margin:0 auto;line-height:1.7}
+
+/* CONTACT LAYOUT */
+.contact-wrap{max-width:1100px;margin:0 auto;padding:60px 6% 100px;display:grid;grid-template-columns:1fr 1.4fr;gap:80px;position:relative;z-index:1;align-items:start}
+@media(max-width:768px){.contact-wrap{grid-template-columns:1fr;gap:48px}}
+
+/* LEFT — info */
+.contact-info h3{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;margin-bottom:16px}
+.contact-info p{font-size:.93rem;color:rgba(245,240,232,.6);line-height:1.8;margin-bottom:36px}
+.contact-item{display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-bottom:1px solid var(--border-soft)}
+.contact-item:first-of-type{border-top:1px solid var(--border-soft)}
+.contact-item-icon{width:40px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem;flex-shrink:0}
+.contact-item-label{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.contact-item-value{font-size:.95rem;color:var(--cream)}
+.contact-item-value a{color:var(--gold);text-decoration:none}
+.contact-item-value a:hover{color:var(--gold-light)}
+.response-note{margin-top:32px;padding:20px 24px;background:var(--gold-dim);border:1px solid var(--border);font-size:.85rem;color:rgba(245,240,232,.7);line-height:1.7}
+
+/* RIGHT — form */
+.contact-form{background:var(--ink-soft);border:1px solid var(--border);padding:44px;position:relative;overflow:hidden}
+.contact-form::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),var(--gold-light),var(--gold))}
+.form-group{margin-bottom:24px}
+.form-group label{display:block;font-size:.73rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border-soft);color:var(--cream);font-family:'DM Sans',sans-serif;font-size:.93rem;font-weight:300;padding:13px 16px;outline:none;transition:border-color .3s;-webkit-appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+.form-group textarea{resize:vertical;min-height:130px;line-height:1.6}
+.form-group select option{background:var(--ink-soft);color:var(--cream)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+.btn-submit{width:100%;background:var(--gold);color:var(--ink);padding:15px;font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;transition:all .3s;margin-top:8px}
+.btn-submit:hover{background:var(--gold-light);transform:translateY(-1px)}
+.form-success{display:none;text-align:center;padding:32px;color:var(--gold)}
+.form-success h3{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:8px}
+.form-success p{font-size:.9rem;color:var(--muted)}
+
+footer{border-top:1px solid var(--border-soft);padding:48px 6%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;position:relative;z-index:1}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;text-decoration:none;display:block;margin-bottom:8px}
+.footer-tagline{font-size:.75rem;color:var(--muted);letter-spacing:.1em}
+.footer-links{display:flex;gap:28px;flex-wrap:wrap}
+.footer-link{font-size:.78rem;color:var(--muted);text-decoration:none;letter-spacing:.08em;transition:color .3s}
+.footer-link:hover{color:var(--gold)}
+.footer-copy{font-size:.72rem;color:rgba(107,107,126,.6);letter-spacing:.06em}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.page-hero>*{animation:fadeUp .8s ease both}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Mizaj<span></span></a>
+  <a href="mizaj-auth.html" class="btn-nav">Log In</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="section-eyebrow">Get in Touch</div>
+  <h1 class="page-title">Contact <em>Us</em></h1>
+  <p class="page-sub">We are a small team based in Pakistan. We read every message and respond personally.</p>
+</section>
+
+<div class="contact-wrap">
+
+  <!-- LEFT -->
+  <div class="contact-info">
+    <h3>We would love to hear from you</h3>
+    <p>Whether you have a question about your report, a payment issue, or simply want to share your experience with Mizaj — reach out.</p>
+
+    <div class="contact-item">
+      <div class="contact-item-icon">✉</div>
+      <div>
+        <div class="contact-item-label">Email</div>
+        <div class="contact-item-value"><a href="mailto:info@organicles.pk">info@organicles.pk</a></div>
+      </div>
+    </div>
+
+    <div class="contact-item">
+      <div class="contact-item-icon">🌍</div>
+      <div>
+        <div class="contact-item-label">Website</div>
+        <div class="contact-item-value"><a href="https://mizaj.pk">mizaj.pk</a></div>
+      </div>
+    </div>
+
+    <div class="contact-item">
+      <div class="contact-item-icon">📍</div>
+      <div>
+        <div class="contact-item-label">Based in</div>
+        <div class="contact-item-value">Islamabad, Pakistan</div>
+      </div>
+    </div>
+
+    <div class="response-note">
+      We typically respond within 24–48 hours on business days. For urgent payment issues, please mention it in your subject line.
+    </div>
+  </div>
+
+  <!-- RIGHT — form -->
+  <div class="contact-form" id="contactForm">
+    <div id="formBody">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="fname" placeholder="e.g. Sara Ahmed">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="femail" placeholder="your@email.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <select id="fsubject">
+          <option value="">Select a topic</option>
+          <option>Question about my report</option>
+          <option>Payment issue</option>
+          <option>Technical problem</option>
+          <option>General feedback</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="fmessage" placeholder="Tell us how we can help you..."></textarea>
+      </div>
+      <button class="btn-submit" onclick="submitForm()">Send Message</button>
+    </div>
+    <div class="form-success" id="formSuccess">
+      <div style="font-size:2.5rem;margin-bottom:16px">✓</div>
+      <h3>Message Sent</h3>
+      <p>Thank you for reaching out. We will get back to you within 48 hours.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div>
+    <a href="index.html" class="footer-logo">Mizaj</a>
+    <div class="footer-tagline">Personality & Career Discovery · Pakistan</div>
+  </div>
+  <div class="footer-links">
+    <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+    <a href="terms.html" class="footer-link">Terms of Service</a>
+    <a href="contact.html" class="footer-link" style="color:var(--gold)">Contact</a>
+    <a href="about.html" class="footer-link">About</a>
+    <a href="index.html" class="footer-link">Home</a>
+  </div>
+  <div class="footer-copy">© 2026 Mizaj · mizaj.pk</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+function submitForm() {
+  const name = document.getElementById('fname').value.trim();
+  const email = document.getElementById('femail').value.trim();
+  const subject = document.getElementById('fsubject').value;
+  const message = document.getElementById('fmessage').value.trim();
+
+  if (!name || !email || !subject || !message) {
+    alert('Please fill in all fields before submitting.');
+    return;
+  }
+
+  // Build mailto link
+  const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+  const mailtoLink = `mailto:organicles.pk@gmail.com?subject=${encodeURIComponent('Mizaj Contact: ' + subject)}&body=${body}`;
+
+  window.location.href = mailtoLink;
+
+  // Show success
+  document.getElementById('formBody').style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+}
+</script>
+</body>
+</html>

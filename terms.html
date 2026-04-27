@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — Mizaj</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0D0D12;--ink-soft:#1A1A24;--ink-mid:#2B2B38;--gold:#C9A84C;--gold-light:#E8CC7A;--gold-dim:rgba(201,168,76,0.15);--cream:#F5F0E8;--muted:#6B6B7E;--card-bg:rgba(255,255,255,0.035);--border:rgba(201,168,76,0.18);--border-soft:rgba(255,255,255,0.07)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 6%;border-bottom:1px solid transparent;transition:all .4s ease}
+nav.scrolled{background:rgba(13,13,18,.88);border-bottom-color:var(--border-soft);backdrop-filter:blur(20px)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-decoration:none;text-transform:uppercase}
+.nav-logo span{display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%;margin-left:4px;vertical-align:middle;margin-bottom:4px}
+.btn-nav{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:9px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .3s ease}
+.btn-nav:hover{background:var(--gold);color:var(--ink)}
+.page-hero{padding:160px 6% 80px;text-align:center;position:relative;overflow:hidden}
+.page-hero-glow{position:absolute;width:600px;height:400px;background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.section-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.section-eyebrow::before,.section-eyebrow::after{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,6vw,5.5rem);font-weight:300;line-height:1.05;margin-bottom:20px}
+.page-title em{font-style:italic;color:var(--gold)}
+.page-meta{font-size:.8rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.content-wrap{max-width:780px;margin:0 auto;padding:0 6% 100px;position:relative;z-index:1}
+.content-section{margin-bottom:56px;padding-bottom:56px;border-bottom:1px solid var(--border-soft)}
+.content-section:last-child{border-bottom:none}
+.content-section h2{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:600;color:var(--cream);margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.content-section h2::before{content:'';display:block;width:3px;height:24px;background:var(--gold);flex-shrink:0}
+.content-section p{font-size:.97rem;color:rgba(245,240,232,.7);line-height:1.85;margin-bottom:14px;font-weight:300}
+.content-section p:last-child{margin-bottom:0}
+.content-section ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.content-section ul li{font-size:.93rem;color:rgba(245,240,232,.65);line-height:1.7;padding-left:20px;position:relative}
+.content-section ul li::before{content:'';position:absolute;left:0;top:11px;width:6px;height:1px;background:var(--gold)}
+.highlight-box{background:var(--gold-dim);border:1px solid var(--border);padding:24px 28px;margin:24px 0}
+.highlight-box p{color:rgba(245,240,232,.85) !important;font-size:.92rem !important}
+footer{border-top:1px solid var(--border-soft);padding:48px 6%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;position:relative;z-index:1}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;text-decoration:none;display:block;margin-bottom:8px}
+.footer-tagline{font-size:.75rem;color:var(--muted);letter-spacing:.1em}
+.footer-links{display:flex;gap:28px;flex-wrap:wrap}
+.footer-link{font-size:.78rem;color:var(--muted);text-decoration:none;letter-spacing:.08em;transition:color .3s}
+.footer-link:hover{color:var(--gold)}
+.footer-copy{font-size:.72rem;color:rgba(107,107,126,.6);letter-spacing:.06em}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.page-hero>*{animation:fadeUp .8s ease both}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Mizaj<span></span></a>
+  <a href="mizaj-auth.html" class="btn-nav">Log In</a>
+</nav>
+
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="section-eyebrow">Legal</div>
+  <h1 class="page-title">Terms of <em>Service</em></h1>
+  <p class="page-meta">Last updated: April 2026</p>
+</section>
+
+<div class="content-wrap">
+
+  <div class="highlight-box">
+    <p>By using Mizaj, you agree to these terms. Please read them carefully. If you do not agree, you should not use our services.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Acceptance of Terms</h2>
+    <p>By accessing or using Mizaj at mizaj.pk, you agree to be bound by these Terms of Service. These terms apply to all users of the platform including visitors, registered users, and paying customers.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>The Service</h2>
+    <p>Mizaj provides a personality assessment based on the MBTI framework, delivering a detailed report covering personality type, career paths suited to the Pakistani job market, strengths, growth areas, relationship insights, and financial personality.</p>
+    <p>The assessment is intended for personal development and self-awareness purposes only. It is not a clinical psychological evaluation and should not be used as a substitute for professional advice.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Payment & Refunds</h2>
+    <p>Access to the full personality report requires a one-time payment of PKR 2,500. This payment is processed securely through Dialog Pay.</p>
+    <ul>
+      <li>Payment is non-refundable once the test has been completed and the report has been accessed</li>
+      <li>If a technical error prevents you from accessing your report after payment, contact us and we will resolve it within 48 hours</li>
+      <li>We reserve the right to change pricing at any time; existing paid users will not be affected</li>
+    </ul>
+  </div>
+
+  <div class="content-section">
+    <h2>User Accounts</h2>
+    <p>You are responsible for maintaining the confidentiality of your account credentials. You agree to provide accurate information during signup and not to impersonate another person.</p>
+    <p>We reserve the right to suspend or terminate accounts that violate these terms or are used for fraudulent purposes.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Intellectual Property</h2>
+    <p>All content on Mizaj including the personality reports, question bank, design, and written material is the intellectual property of Mizaj and may not be reproduced, distributed, or sold without prior written permission.</p>
+    <p>Your personality report is for personal use only and may not be resold or published commercially.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Limitation of Liability</h2>
+    <p>Mizaj provides the personality assessment on an "as is" basis. We make no warranty that the results will be accurate for every individual. Personality assessments are probabilistic tools, not deterministic diagnoses.</p>
+    <p>Mizaj shall not be liable for any decisions — career, financial, or personal — made based on your personality report results.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Changes to Terms</h2>
+    <p>We may update these terms from time to time. Continued use of Mizaj after changes are posted constitutes acceptance of the revised terms. We will notify registered users of material changes via email.</p>
+  </div>
+
+  <div class="content-section">
+    <h2>Contact</h2>
+    <p>For questions regarding these terms, contact us at <strong style="color:var(--gold)">info@organicles.pk</strong>.</p>
+  </div>
+
+</div>
+
+<footer>
+  <div>
+    <a href="index.html" class="footer-logo">Mizaj</a>
+    <div class="footer-tagline">Personality & Career Discovery · Pakistan</div>
+  </div>
+  <div class="footer-links">
+    <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+    <a href="terms.html" class="footer-link" style="color:var(--gold)">Terms of Service</a>
+    <a href="contact.html" class="footer-link">Contact</a>
+    <a href="about.html" class="footer-link">About</a>
+    <a href="index.html" class="footer-link">Home</a>
+  </div>
+  <div class="footer-copy">© 2026 Mizaj · mizaj.pk</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+</script>
+</body>
+</html>

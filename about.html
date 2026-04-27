@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Mizaj</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0D0D12;--ink-soft:#1A1A24;--ink-mid:#2B2B38;--gold:#C9A84C;--gold-light:#E8CC7A;--gold-dim:rgba(201,168,76,0.15);--cream:#F5F0E8;--muted:#6B6B7E;--card-bg:rgba(255,255,255,0.035);--border:rgba(201,168,76,0.18);--border-soft:rgba(255,255,255,0.07)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 6%;border-bottom:1px solid transparent;transition:all .4s ease}
+nav.scrolled{background:rgba(13,13,18,.88);border-bottom-color:var(--border-soft);backdrop-filter:blur(20px)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-decoration:none;text-transform:uppercase}
+.nav-logo span{display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%;margin-left:4px;vertical-align:middle;margin-bottom:4px}
+.btn-nav{background:transparent;border:1px solid var(--gold);color:var(--gold);padding:9px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .3s ease}
+.btn-nav:hover{background:var(--gold);color:var(--ink)}
+
+/* HERO */
+.page-hero{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:140px 6% 80px;text-align:center;position:relative;overflow:hidden}
+.page-hero-glow{position:absolute;width:700px;height:500px;background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.section-eyebrow{display:inline-flex;align-items:center;gap:12px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.section-eyebrow::before,.section-eyebrow::after{content:'';display:block;width:28px;height:1px;background:var(--gold)}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3.2rem,7vw,6.5rem);font-weight:300;line-height:1.02;margin-bottom:28px}
+.page-title em{font-style:italic;color:var(--gold);display:block}
+.page-sub{font-size:clamp(1rem,1.8vw,1.18rem);color:rgba(245,240,232,.55);max-width:560px;margin:0 auto;line-height:1.8;font-weight:300}
+
+/* STATS */
+.stats-row{display:flex;align-items:center;gap:0;justify-content:center;margin-top:64px;flex-wrap:wrap;border:1px solid var(--border-soft);max-width:700px;margin-left:auto;margin-right:auto}
+.stat-block{flex:1;min-width:140px;padding:28px 20px;text-align:center;position:relative}
+.stat-block:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--border-soft)}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:600;color:var(--gold);line-height:1}
+.stat-label{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+
+/* MISSION */
+.mission{padding:100px 6%;position:relative;z-index:1}
+.mission-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center}
+@media(max-width:768px){.mission-inner{grid-template-columns:1fr;gap:48px}}
+.mission-text .section-eyebrow{margin-bottom:16px}
+.mission-text h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:300;line-height:1.1;margin-bottom:24px}
+.mission-text h2 em{font-style:italic;color:var(--gold)}
+.mission-text p{font-size:.97rem;color:rgba(245,240,232,.65);line-height:1.85;margin-bottom:16px;font-weight:300}
+.mission-text p:last-child{margin-bottom:0}
+.mission-visual{position:relative}
+.mission-card{background:var(--ink-soft);border:1px solid var(--border);padding:40px;position:relative;overflow:hidden}
+.mission-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),var(--gold-light),var(--gold))}
+.mission-card-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+.mission-card-type{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:300;color:var(--cream);line-height:1;margin-bottom:8px}
+.mission-card-name{font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:28px}
+.mission-card-line{height:1px;background:var(--border-soft);margin-bottom:24px}
+.mission-card-list{display:flex;flex-direction:column;gap:12px}
+.mission-card-item{font-size:.87rem;color:rgba(245,240,232,.6);display:flex;align-items:center;gap:10px}
+.mission-card-item::before{content:'';width:18px;height:1px;background:var(--gold);flex-shrink:0}
+
+/* VALUES */
+.values{padding:100px 6%;background:linear-gradient(to bottom,transparent,rgba(201,168,76,.02),transparent);position:relative;z-index:1}
+.values-inner{max-width:1100px;margin:0 auto}
+.values-header{text-align:center;margin-bottom:60px}
+.values-header h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:300;line-height:1.1;margin-bottom:12px}
+.values-header h2 em{font-style:italic;color:var(--gold)}
+.values-header p{font-size:.97rem;color:rgba(245,240,232,.5);max-width:500px;margin:0 auto}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+@media(max-width:768px){.values-grid{grid-template-columns:1fr}}
+.value-card{background:var(--card-bg);border:1px solid var(--border-soft);padding:40px 32px;transition:all .4s ease;position:relative;overflow:hidden}
+.value-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold-dim),transparent);opacity:0;transition:opacity .4s}
+.value-card:hover{border-color:var(--border);transform:translateY(-4px)}
+.value-card:hover::before{opacity:1}
+.value-icon{font-size:2rem;margin-bottom:20px;display:block}
+.value-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;margin-bottom:12px;color:var(--cream)}
+.value-desc{font-size:.88rem;color:var(--muted);line-height:1.75}
+
+/* STORY */
+.story{padding:100px 6%;position:relative;z-index:1}
+.story-inner{max-width:780px;margin:0 auto;text-align:center}
+.story-inner .section-eyebrow{margin-bottom:16px}
+.story-inner h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.2rem,4vw,3.5rem);font-weight:300;line-height:1.1;margin-bottom:40px}
+.story-inner h2 em{font-style:italic;color:var(--gold)}
+.story-inner p{font-size:1rem;color:rgba(245,240,232,.65);line-height:1.9;margin-bottom:20px;font-weight:300;text-align:left}
+
+/* CTA */
+.about-cta{padding:100px 6%;text-align:center;position:relative;overflow:hidden;z-index:1}
+.about-cta-glow{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(201,168,76,.07) 0%,transparent 60%);pointer-events:none}
+.about-cta h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:300;margin-bottom:16px}
+.about-cta h2 em{font-style:italic;color:var(--gold)}
+.about-cta p{font-size:1rem;color:rgba(245,240,232,.5);margin-bottom:40px}
+.btn-primary{background:var(--gold);color:var(--ink);padding:16px 44px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .3s;display:inline-block}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.35)}
+
+footer{border-top:1px solid var(--border-soft);padding:48px 6%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;position:relative;z-index:1}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;letter-spacing:.12em;color:var(--gold);text-transform:uppercase;text-decoration:none;display:block;margin-bottom:8px}
+.footer-tagline{font-size:.75rem;color:var(--muted);letter-spacing:.1em}
+.footer-links{display:flex;gap:28px;flex-wrap:wrap}
+.footer-link{font-size:.78rem;color:var(--muted);text-decoration:none;letter-spacing:.08em;transition:color .3s}
+.footer-link:hover{color:var(--gold)}
+.footer-copy{font-size:.72rem;color:rgba(107,107,126,.6);letter-spacing:.06em}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.page-hero>*{animation:fadeUp .8s ease both}
+.page-hero .section-eyebrow{animation-delay:.05s}
+.page-hero .page-title{animation-delay:.1s}
+.page-hero .page-sub{animation-delay:.15s}
+.page-hero .stats-row{animation-delay:.2s}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Mizaj<span></span></a>
+  <a href="mizaj-auth.html" class="btn-nav">Log in</a>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-glow"></div>
+  <div class="section-eyebrow">Our Story</div>
+  <h1 class="page-title">Pakistan's First<br><em>Personality Platform</em></h1>
+  <p class="page-sub">Built for Pakistanis, by Pakistanis. We believe self-knowledge is the foundation of a meaningful career and a fulfilling life.</p>
+  <div class="stats-row">
+    <div class="stat-block">
+      <div class="stat-num">16</div>
+      <div class="stat-label">Personality Types</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">60</div>
+      <div class="stat-label">Questions</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">8</div>
+      <div class="stat-label">Career Paths Each</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">2</div>
+      <div class="stat-label">Languages</div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission">
+  <div class="mission-inner">
+    <div class="mission-text">
+      <div class="section-eyebrow">Why Mizaj</div>
+      <h2>Built for the <em>Pakistani context</em></h2>
+      <p>Most personality tools are built for the West. They recommend careers that do not exist here, salaries in dollars, and environments that do not reflect Pakistan's social and professional reality.</p>
+      <p>Mizaj was built from the ground up for Pakistan. Every career path, every salary range, every cultural nuance in the report is grounded in the actual Pakistani job market and social fabric.</p>
+      <p>We believe that when you truly understand how you think, what drives you, and where you naturally thrive — you make better decisions about your career, your relationships, and your life.</p>
+    </div>
+    <div class="mission-visual">
+      <div class="mission-card">
+        <div class="mission-card-eyebrow">Sample Report</div>
+        <div class="mission-card-type">INTJ</div>
+        <div class="mission-card-name">The Architect</div>
+        <div class="mission-card-line"></div>
+        <div class="mission-card-list">
+          <div class="mission-card-item">Strategic Systems Thinking</div>
+          <div class="mission-card-item">Independent, Long-range Planner</div>
+          <div class="mission-card-item">Top careers in Tech, Finance, Law</div>
+          <div class="mission-card-item">PKR 150k to 800k per month</div>
+          <div class="mission-card-item">Full growth & relationship report</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values">
+  <div class="values-inner">
+    <div class="values-header">
+      <div class="section-eyebrow">What We Stand For</div>
+      <h2>Our <em>Values</em></h2>
+      <p>The principles that guide everything we build at Mizaj.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card">
+        <span class="value-icon">🎯</span>
+        <div class="value-title">Contextual Accuracy</div>
+        <p class="value-desc">We do not copy-paste Western frameworks. Every insight in our reports is validated against Pakistan's real job market, salary data, and cultural context.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">🔒</span>
+        <div class="value-title">Privacy First</div>
+        <p class="value-desc">Your personality data is deeply personal. We never sell it, never share it with advertisers, and give you the right to delete it completely at any time.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">✦</span>
+        <div class="value-title">Honest Depth</div>
+        <p class="value-desc">We do not give you flattery. We give you a real, honest picture of your strengths and the areas where you will need to grow. That is what actually helps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story">
+  <div class="story-inner">
+    <div class="section-eyebrow">The Beginning</div>
+    <h2>How <em>Mizaj</em> came to be</h2>
+    <p>Mizaj started with a simple observation: millions of Pakistanis are in the wrong careers — not because they lack ability, but because no one ever helped them understand how they think and where they naturally thrive.</p>
+    <p>The MBTI framework has been used globally for decades to help people make better career decisions. But every tool available was built for a foreign audience with foreign salaries and foreign career paths. When a Pakistani student gets told to "become a UX researcher" with a $90,000 salary — that is not useful guidance.</p>
+    <p>We built Mizaj to fix that. A 60-question assessment, deeply localized reports, career paths with real PKR salary ranges, and insights that respect the specific social and professional landscape of Pakistan. In Urdu and English.</p>
+    <p>We are just getting started.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="about-cta">
+  <div class="about-cta-glow"></div>
+  <h2>Ready to discover <em>who you are?</em></h2>
+  <p>Join thousands of Pakistanis who have unlocked their personality report.</p>
+  <a href="mizaj-auth.html" class="btn-primary">Discover Your Type →</a>
+</section>
+
+<footer>
+  <div>
+    <a href="index.html" class="footer-logo">Mizaj</a>
+    <div class="footer-tagline">Personality & Career Discovery · Pakistan</div>
+  </div>
+  <div class="footer-links">
+    <a href="privacy-policy.html" class="footer-link">Privacy Policy</a>
+    <a href="terms.html" class="footer-link">Terms of Service</a>
+    <a href="contact.html" class="footer-link">Contact</a>
+    <a href="about.html" class="footer-link" style="color:var(--gold)">About</a>
+    <a href="index.html" class="footer-link">Home</a>
+  </div>
+  <div class="footer-copy">© 2026 Mizaj · mizaj.pk</div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+</script>
+</body>
+</html>
