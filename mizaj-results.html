@@ -121,8 +121,6 @@ section{position:relative;z-index:1;padding:90px 6%}
 .btn-copy:hover{border-color:var(--gold);color:var(--gold)}
 .btn-pdf{background:transparent;border:1px solid var(--border);color:var(--cream);padding:13px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .3s}
 .btn-pdf:hover{border-color:var(--gold);color:var(--gold)}
-.btn-logout{background:transparent;border:1px solid rgba(255,80,80,.4);color:rgba(255,120,120,.8);padding:13px 24px;font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .3s}
-.btn-logout:hover{border-color:rgba(255,80,80,.8);color:rgb(255,100,100)}
 
 /* TOAST */
 .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gold);color:var(--ink);padding:12px 28px;font-size:.82rem;letter-spacing:.08em;opacity:0;transition:all .4s ease;pointer-events:none;z-index:200;font-weight:500}
@@ -214,7 +212,7 @@ section{position:relative;z-index:1;padding:90px 6%}
 <body>
 
 <nav>
-  <a href="index.html" class="nav-logo">Mizaj<span></span></a>
+  <a href="#" class="nav-logo">Mizaj<span></span></a>
   <div class="nav-actions">
     <button class="btn-share-nav" onclick="scrollToShare()" data-en="Share Results" data-ur="نتائج شیئر کریں">Share Results</button>
     <button class="lang-toggle" onclick="toggleLang()">
@@ -397,7 +395,6 @@ section{position:relative;z-index:1;padding:90px 6%}
     </button>
     <button class="btn-copy" onclick="copyLink()" data-en="Copy Link" data-ur="لنک کاپی کریں">Copy Link</button>
     <button class="btn-pdf" onclick="showPrintModal()" data-en="Download PDF" data-ur="PDF ڈاؤن لوڈ کریں">Download PDF</button>
-    <button class="btn-logout" onclick="logout()" data-en="Log Out" data-ur="لاگ آؤٹ">Log Out</button>
   </div>
 </div>
 
@@ -437,24 +434,19 @@ async function loadResult() {
   }
 
   try {
-    // ✅ Always fetch latest from backend first
     const res = await fetch(`https://web-production-1f476a.up.railway.app/result/${user_id}`);
 
     if (!res.ok) throw new Error("not found");
 
     const data = await res.json();
-    console.log("✅ Result from backend:", data);
+    console.log("✅ Result:", data);
 
     const type = data.type || data.result_type;
-
-    // ✅ Update localStorage to match latest backend result
-    localStorage.setItem("mizaj_mbti", type);
-
     applyResult(type);
 
   } catch (err) {
     console.error("❌ Error loading result:", err);
-    // fallback to localStorage only if backend fails
+    // fallback to localStorage if backend fails
     if (localType) {
       console.log("⚠️ Using localStorage fallback:", localType);
       applyResult(localType);
@@ -534,11 +526,7 @@ function loadScores() {
 
 /* ── CLEAN DASHES HELPER ── */
 function cleanDashes(text) {
-  if (!text) return '';
-  return text
-    .replace(/\s*\u2014\s*/g, ' ')   // em dash — → space
-    .replace(/\s*\u2013\s*/g, ' ')   // en dash – → space
-    .replace(/\s+\-\s+/g, ' ');      // spaced hyphen - → space
+  return text.replace(/\s*\u2014\s*/g, ' \u2013 ');
 }
 
 /* ── RENDER PERSONALITY SUMMARY ── */
@@ -783,19 +771,26 @@ function doPrint() {
   }, 300);
 }
 
-/* ── LOGOUT ── */
-function logout() {
-  localStorage.removeItem('user_id');
-  localStorage.removeItem('attempt_id');
-  localStorage.removeItem('mizaj_mbti');
-  localStorage.removeItem('mizaj_scores');
-  localStorage.removeItem('mizaj_answers');
-  window.location.href = 'mizaj-auth.html';
+// ✅ AUTH GUARD
+function authGuard() {
+  const user_id = localStorage.getItem("user_id");
+  if (!user_id) {
+    window.location.href = "mizaj-auth.html";
+    return false;
+  }
+  return true;
 }
 
 init();
-loadResult();
-window.onload = loadResult;
+
+// ✅ Only load result if logged in
+if (authGuard()) {
+  loadResult();
+}
+
+window.onload = () => {
+  if (authGuard()) loadResult();
+};
 </script>
 
 </body>

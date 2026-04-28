@@ -131,7 +131,7 @@ body.urdu .q-text{font-family:'Noto Nastaliq Urdu',serif;font-size:1.4rem}
 
 <!-- FIXED HEADER -->
 <header class="test-header">
-  <a href="index.html" class="nav-logo">M<span></span></a>
+  <a href="#" class="nav-logo">M<span></span></a>
   <div class="header-center">
     <div class="progress-counter">Question <strong id="qNumDisplay">—</strong> of 60</div>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -319,8 +319,8 @@ async function startTest() {
     throw new Error("No user");
   }
 
-  // ✅ Always clear old attempt — never reuse a completed one
-  localStorage.removeItem("attempt_id");
+  let attempt_id = localStorage.getItem("attempt_id");
+  if (attempt_id) return attempt_id;
 
   const res = await fetch(`${API_BASE}/start-test?user_id=${user_id}`, {
     method: "POST"
@@ -329,8 +329,8 @@ async function startTest() {
   if (!res.ok) throw new Error("Failed to start test");
 
   const data = await res.json();
+
   localStorage.setItem("attempt_id", data.attempt_id);
-  console.log("✅ New attempt_id:", data.attempt_id);
 
   return data.attempt_id;
 }
@@ -377,13 +377,6 @@ async function saveAnswer(question_id, selected_option) {
 async function completeTest(result_type) {
   const attempt_id = localStorage.getItem("attempt_id");
 
-  if (!attempt_id || attempt_id === 'null') {
-    console.error("❌ No attempt_id found");
-    throw new Error("No attempt_id found");
-  }
-
-  console.log("📤 Sending complete-test:", { attempt_id, result_type });
-
   const res = await fetch(
     `${API_BASE}/complete-test?attempt_id=${attempt_id}&result_type=${result_type}`,
     { method: "POST" }
@@ -395,9 +388,7 @@ async function completeTest(result_type) {
     throw new Error(err);
   }
 
-  const data = await res.json();
-  console.log("✅ complete-test response:", data);
-  return data;
+  return res.json();
 }
 
 let currentQ = 0;     // 0-59
@@ -575,8 +566,7 @@ async function finishTest() {
   const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
 
   questions.forEach((q, i) => {
-    const ans = answers[i];
-    if (!ans) return; // ✅ skip unanswered
+    const ans = answers[i] || 'a';
     if (ans === 'a') scores[q.pole]++;
     else scores[opposites[q.pole]]++;
   });
@@ -645,11 +635,33 @@ window.beginChapter = beginChapter;
 window.addEventListener("load", async () => {
   console.log("🔥 PAGE LOADED");
 
+  // ✅ AUTH GUARD — check login and payment before anything
+  const user_id = localStorage.getItem("user_id");
+
+  if (!user_id) {
+    console.warn("❌ No user_id — redirecting to login");
+    window.location.href = "mizaj-auth.html";
+    return;
+  }
+
   try {
+    // ✅ PAYMENT GUARD — verify payment with backend
+    const res = await fetch(`${API_BASE}/check-access/${user_id}`);
+    const data = await res.json();
+
+    if (data.access !== "test") {
+      console.warn("❌ No payment — redirecting to payment page");
+      window.location.href = "mizaj-payment.html";
+      return;
+    }
+
+    // ✅ Paid and logged in — start test
     await startTest();
     console.log("✅ start-test called on load");
+
   } catch (e) {
-    console.error("❌ start-test failed:", e);
+    console.error("❌ Auth check failed:", e);
+    window.location.href = "mizaj-auth.html";
   }
 });
 </script>
