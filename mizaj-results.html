@@ -209,7 +209,7 @@ section{position:relative;z-index:1;padding:90px 6%}
 }
 </style>
 </head>
-<body>
+<body style="visibility:hidden">
 
 <nav>
   <a href="#" class="nav-logo">Mizaj<span></span></a>
@@ -771,26 +771,20 @@ function doPrint() {
   }, 300);
 }
 
-// ✅ AUTH GUARD
-function authGuard() {
+// ✅ AUTH GUARD — hide page until verified
+(function() {
   const user_id = localStorage.getItem("user_id");
   if (!user_id) {
-    window.location.href = "mizaj-auth.html";
-    return false;
+    window.location.replace("mizaj-auth.html");
+    return;
   }
-  return true;
-}
+  // ✅ Logged in — show page
+  document.body.style.visibility = "visible";
+})();
 
 init();
-
-// ✅ Only load result if logged in
-if (authGuard()) {
-  loadResult();
-}
-
-window.onload = () => {
-  if (authGuard()) loadResult();
-};
+loadResult();
+window.onload = loadResult;
 </script>
 
 </body>
