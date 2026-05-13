@@ -327,8 +327,8 @@ async function startTest() {
     throw new Error("No user");
   }
 
-  let attempt_id = localStorage.getItem("attempt_id");
-  if (attempt_id) return attempt_id;
+  // ✅ Always clear old attempt — never reuse a completed one
+  localStorage.removeItem("attempt_id");
 
   const res = await fetch(`${API_BASE}/start-test?user_id=${user_id}`, {
     method: "POST"
@@ -337,8 +337,8 @@ async function startTest() {
   if (!res.ok) throw new Error("Failed to start test");
 
   const data = await res.json();
-
   localStorage.setItem("attempt_id", data.attempt_id);
+  console.log("✅ New attempt_id:", data.attempt_id);
 
   return data.attempt_id;
 }
@@ -574,7 +574,8 @@ async function finishTest() {
   const scores = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
 
   questions.forEach((q, i) => {
-    const ans = answers[i] || 'a';
+    const ans = answers[i];
+    if (!ans) return; // ✅ skip unanswered
     if (ans === 'a') scores[q.pole]++;
     else scores[opposites[q.pole]]++;
   });
